@@ -1,0 +1,257 @@
+---
+title: 'WhatsappButton'
+description: 'Floating WhatsApp contact button with scroll-based visibility and animations'
+icon: 'whatsapp'
+---
+
+## Overview
+
+The `WhatsappButton` component is a floating action button that appears after scrolling, providing users with quick access to WhatsApp contact. It features smooth animations, hover effects, and route-based visibility control.
+
+## Features
+
+- **Scroll-Based Visibility**: Appears after scrolling 300px down the page
+- **Route-Aware**: Automatically hidden on the `/login` page
+- **Smooth Animations**: Fade and slide animations for appearance/disappearance
+- **Hover Effects**: Scale and shadow effects on hover
+- **Pre-filled Message**: Opens WhatsApp with a default greeting message
+- **Fixed Positioning**: Stays in the bottom-right corner of the viewport
+
+## Component Structure
+
+The WhatsappButton component is a client-side component that doesn't accept any props.
+
+```tsx
+export default function WhatsappButton()
+```
+
+## Implementation
+
+### Basic Usage
+
+```tsx
+import WhatsappButton from '@/components/WhatsappButton';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <WhatsappButton />
+      </body>
+    </html>
+  );
+}
+```
+
+## State Management
+
+The component manages two pieces of state:
+
+```tsx
+const [visible, setVisible] = useState(false);
+const pathname = usePathname();
+```
+
+- `visible`: Controls whether the button is shown based on scroll position
+- `pathname`: Used to hide the button on specific routes
+
+## Scroll Detection
+
+The component listens for scroll events and shows the button after 300px:
+
+```tsx
+useEffect(() => {
+  const handleScroll = () => {
+    setVisible(window.scrollY > 300);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+```
+
+## Route-Based Visibility
+
+The button is automatically hidden on the login page:
+
+```tsx
+if (pathname === "/login") return null;
+```
+
+## WhatsApp Configuration
+
+### Phone Number
+
+```tsx
+const phoneNumber = "+541164129888";
+```
+
+### Pre-filled Message
+
+The button opens WhatsApp with a friendly greeting:
+
+```tsx
+const message = encodeURIComponent(
+  "Hola 👋 quiero recibir información sobre sus seguros."
+);
+```
+
+### WhatsApp Link
+
+```tsx
+<a
+  href={`https://wa.me/${phoneNumber}?text=${message}`}
+  target="_blank"
+>
+  <FaWhatsapp />
+</a>
+```
+
+## Styling
+
+### Button Appearance
+
+- **Size**: 56px x 56px on mobile, 64px x 64px on desktop
+- **Color**: WhatsApp green (`#25D366`)
+- **Shape**: Circular with `rounded-full`
+- **Icon**: WhatsApp icon from `react-icons/fa`
+
+### Animation Classes
+
+```tsx
+className={`fixed bottom-6 right-6 z-50 
+  w-14 h-14 md:w-16 md:h-16 
+  flex items-center justify-center 
+  rounded-full bg-[#25D366] text-white text-2xl md:text-3xl
+  shadow-lg
+  transition-all duration-500
+  hover:scale-110 hover:shadow-[0_0_25px_rgba(37,211,102,0.6)] 
+  ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}
+`}
+```
+
+### Visibility States
+
+#### Visible
+
+- `opacity-100`: Fully visible
+- `translate-y-0`: Original position
+- Pointer events enabled
+
+#### Hidden
+
+- `opacity-0`: Invisible
+- `translate-y-10`: Moved 40px down
+- `pointer-events-none`: No interaction possible
+
+### Hover Effects
+
+- `hover:scale-110`: Grows to 110% size
+- `hover:shadow-[0_0_25px_rgba(37,211,102,0.6)]`: Glowing green shadow effect
+
+## Responsive Sizing
+
+```tsx
+// Mobile
+w-14 h-14          // 56px x 56px
+text-2xl           // Font size
+
+// Desktop (md and up)
+md:w-16 md:h-16    // 64px x 64px
+md:text-3xl        // Larger icon
+```
+
+## Positioning
+
+```tsx
+fixed              // Fixed positioning
+bottom-6           // 24px from bottom
+right-6            // 24px from right
+z-50               // High z-index to stay on top
+```
+
+## Animation Duration
+
+All transitions use a 500ms duration for smooth animations:
+
+```tsx
+transition-all duration-500
+```
+
+## Accessibility
+
+The link opens in a new tab with WhatsApp's web interface:
+
+```tsx
+target="_blank"
+```
+
+<Note>
+  The button uses `pointer-events-none` when hidden to prevent accidental clicks on the invisible element.
+</Note>
+
+## Dependencies
+
+```tsx
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { FaWhatsapp } from "react-icons/fa";
+```
+
+## Design Tokens
+
+### Colors
+
+- Background: `#25D366` (WhatsApp brand color)
+- Text: White
+- Hover Shadow: `rgba(37,211,102,0.6)` (Semi-transparent green)
+
+### Timing
+
+- Scroll Threshold: 300px
+- Transition Duration: 500ms
+
+### Sizes
+
+- Mobile: 56px x 56px
+- Desktop: 64px x 64px
+- Hover Scale: 110%
+
+## Customization Examples
+
+### Change Scroll Threshold
+
+```tsx
+const handleScroll = () => {
+  setVisible(window.scrollY > 500); // Show after 500px instead
+};
+```
+
+### Change Phone Number
+
+```tsx
+const phoneNumber = "+1234567890"; // Your WhatsApp number
+```
+
+### Change Default Message
+
+```tsx
+const message = encodeURIComponent(
+  "Hi! I would like more information."
+);
+```
+
+### Hide on Additional Routes
+
+```tsx
+if (pathname === "/login" || pathname === "/admin") return null;
+```
+
+## Source Code Location
+
+`/app/components/WhatsappButton.tsx`
+
+## Related Components
+
+- [ScrollToTop](/components/scroll-to-top) - Companion button for scrolling to page top

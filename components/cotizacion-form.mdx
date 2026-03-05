@@ -1,0 +1,495 @@
+---
+title: 'CotizacionForm'
+description: 'Dynamic insurance quotation form with real-time validation and multiple submission methods'
+icon: 'file-invoice'
+---
+
+## Overview
+
+The `CotizacionForm` component is the core form system for generating insurance quotes. It dynamically adapts its fields based on the selected insurance type using the `segurosConfig` system, provides real-time validation, and supports both WhatsApp and email submission methods.
+
+## Props
+
+The component accepts optional props for pre-filling form values:
+
+<ParamField path="tipoInicial" type="string">
+  Pre-selected insurance type. If provided, the form will load with this insurance type selected.
+</ParamField>
+
+<ParamField path="coberturaInicial" type="string">
+  Pre-selected coverage type. Used to pre-fill the coverage field when applicable.
+</ParamField>
+
+## Features
+
+### Dynamic Form System
+
+- **Type-Based Fields**: Form fields dynamically change based on selected insurance type
+- **Configuration-Driven**: All field definitions come from `segurosConfig`
+- **Smooth Animations**: Fields appear with CSS transitions when insurance type is selected
+
+### Validation System
+
+- **Real-Time Error Display**: Errors shown inline below each field
+- **Comprehensive Validation**: Validates required fields, email format, phone format, and numeric constraints
+- **Field-Level Error Styling**: Invalid fields get red borders for clear feedback
+
+### Submission Methods
+
+- **WhatsApp Integration**: Generates formatted message and opens WhatsApp with pre-filled data
+- **Email Submission**: Sends quote request via API endpoint with loading state
+- **Toast Notifications**: User feedback for email submission success/failure
+
+## Implementation
+
+### Basic Usage
+
+```tsx
+import CotizacionForm from '@/components/CotizacionForm';
+
+export default function CotizacionPage() {
+  return <CotizacionForm />;
+}
+```
+
+### With Initial Values
+
+```tsx
+<CotizacionForm 
+  tipoInicial="automotor" 
+  coberturaInicial="Todo Riesgo" 
+/>
+```
+
+## State Management
+
+The component manages three primary states:
+
+```tsx
+const [tipoSeguro, setTipoSeguro] = useState(tipoInicial || "");
+const [errors, setErrors] = useState<Record<string, string>>({});
+const [isSending, setIsSending] = useState(false);
+const [formData, setFormData] = useState<any>({
+  nombre: "",
+  email: "",
+  telefono: "",
+  cobertura: coberturaInicial || "",
+});
+```
+
+## Form Data Structure
+
+The `formData` object contains:
+
+### Base Fields (Always Present)
+
+```typescript
+{
+  nombre: string;      // Full name
+  email: string;       // Email address
+  telefono: string;    // Phone number
+  cobertura?: string;  // Coverage type (if applicable)
+}
+```
+
+### Dynamic Fields (Based on Insurance Type)
+
+Additional fields are added based on the selected `tipoSeguro`. For example:
+
+```typescript
+// For "automotor"
+{
+  ...baseFields,
+  marca: string;       // Vehicle brand
+  modelo: string;      // Vehicle model
+  anio: number;        // Year
+  uso: string;         // Usage type
+  gnc: string;         // Has GNC?
+  localidad: string;   // Location
+}
+
+// For "vida"
+{
+  ...baseFields,
+  edad: number;        // Age
+}
+
+// For "hogar"
+{
+  ...baseFields,
+  metros: number;      // Square meters
+  Vivienda: string;    // Housing type
+  localidad: string;   // Location
+}
+```
+
+## Insurance Types
+
+The form supports the following insurance types:
+
+- `automotor` - Vehicle Insurance
+- `vida` - Life Insurance
+- `hogar` - Home Insurance
+- `responsabilidad civil` - Civil Liability Insurance
+- `accidentes personales` - Personal Accident Insurance
+- `incendio` - Fire Insurance
+- `otros` - Other Insurance Types
+
+## SegurosConfig Integration
+
+The form uses the `segurosConfig` object to determine which fields to display:
+
+```tsx
+const config = segurosConfig[tipoSeguro as keyof typeof segurosConfig];
+
+// Config structure:
+type SeguroConfig = {
+  titulo: string;       // Section title
+  campos: Campo[];      // Array of field definitions
+};
+
+type Campo = {
+  name: string;         // Field name
+  label: string;        // Display label
+  type: string;         // Input type (text, number, select)
+  required: boolean;    // Is required?
+  options?: string[];   // For select fields
+  min?: number;         // For number fields
+  max?: number;         // For number fields
+};
+```
+
+## Validation
+
+Validation is handled by the `validarCotizacion` function from `@/lib/validators`:
+
+```tsx
+import { validarCotizacion } from "@/lib/validators";
+
+const nuevosErrores = validarCotizacion(tipoSeguro, formData);
+
+if (Object.keys(nuevosErrores).length > 0) {
+  setErrors(nuevosErrores);
+  return;
+}
+```
+
+### Validation Rules
+
+- **Tipo de Seguro**: Required
+- **Nombre**: Required, must not be empty
+- **Email**: Required, must match email regex pattern
+- **Teléfono**: Required, must be at least 8 digits
+- **Dynamic Fields**: Validated based on their type and configuration
+  - Required fields must be filled
+  - Number fields respect min/max constraints
+
+## WhatsApp Submission
+
+The WhatsApp submission generates a formatted message:
+
+```tsx
+const handleWhatsApp = () => {
+  // Validate first
+  const nuevosErrores = validarCotizacion(tipoSeguro, formData);
+  if (Object.keys(nuevosErrores).length > 0) {
+    setErrors(nuevosErrores);
+    return;
+  }
+
+  setErrors({});
+
+  // Build dynamic detail section
+  let detalleSeguro = "";
+  if (config) {
+    config.campos.forEach((campo) => {
+      detalleSeguro += `${campo.label}: ${formData[campo.name] || "-"}\n`;
+    });
+  }
+
+  // Create formatted message
+  const mensaje = `
+Nueva Cotización Web
+
+Tipo de Seguro: ${tipoSeguro}
+
+Datos del Cliente:
+Nombre: ${formData.nombre}
+Email: ${formData.email}
+Teléfono: ${formData.telefono}
+
+${detalleSeguro}
+`;
+
+  // Open WhatsApp
+  window.open(
+    `https://wa.me/+541164129888?text=${encodeURIComponent(mensaje)}`,
+    "_blank"
+  );
+};
+```
+
+## Email Submission
+
+The email submission uses an API endpoint with loading state management:
+
+```tsx
+const handleEmail = async () => {
+  if (isSending) return; // Prevent duplicate submissions
+
+  const nuevosErrores = validarCotizacion(tipoSeguro, formData);
+  if (Object.keys(nuevosErrores).length > 0) {
+    setErrors(nuevosErrores);
+    return;
+  }
+
+  setErrors({});
+  setIsSending(true); // Activate loading state
+
+  // Build detail section
+  let detalleSeguro = "";
+  if (config) {
+    config.campos.forEach((campo) => {
+      detalleSeguro += `${campo.label}: ${formData[campo.name] || "-"}\n`;
+    });
+  }
+
+  try {
+    const response = await fetch("/api/enviar-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tipoSeguro,
+        ...formData,
+        detalle: detalleSeguro,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error en el servidor");
+    }
+
+    const data = await response.json();
+
+    if (data.success) {
+      Toast.fire({
+        icon: 'success',
+        title: 'Cotización enviada con éxito'
+      });
+      
+      // Clear form
+      setFormData({ nombre: "", email: "", telefono: "" });
+      setTipoSeguro("");
+    }
+  } catch (error) {
+    Toast.fire({
+      icon: 'error',
+      title: 'Error al enviar la solicitud'
+    });
+  } finally {
+    setIsSending(false);
+  }
+};
+```
+
+## Toast Notifications
+
+The component uses SweetAlert2 for toast notifications:
+
+```tsx
+import Swal from 'sweetalert2';
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'center',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  background: '#111b31',
+  color: '#fff',
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+});
+```
+
+## Dynamic Field Rendering
+
+Fields are rendered based on their configuration:
+
+```tsx
+<div className="grid md:grid-cols-2 gap-6">
+  {config.campos.map((campo) => (
+    <div key={campo.name} className="flex flex-col">
+      {campo.type === "select" ? (
+        <select
+          name={campo.name}
+          value={formData[campo.name] || ""}
+          onChange={handleChange}
+          className={`inputStyle ${errors[campo.name] ? "border-red-500" : ""}`}
+        >
+          <option value="">Seleccionar {campo.label}</option>
+          {campo.options?.map((op) => (
+            <option key={op} value={op}>{op}</option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type={campo.type}
+          name={campo.name}
+          placeholder={campo.label}
+          value={formData[campo.name] || ""}
+          onChange={handleChange}
+          className={`inputStyle ${errors[campo.name] ? "border-red-500" : ""}`}
+        />
+      )}
+      
+      <div className="min-h-[20px]">
+        {errors[campo.name] && (
+          <p className="text-red-500 text-sm mt-1">
+            {errors[campo.name]}
+          </p>
+        )}
+      </div>
+    </div>
+  ))}
+</div>
+```
+
+## Animation System
+
+Dynamic fields appear with smooth animations:
+
+```tsx
+<div
+  className={`
+    overflow-hidden transition-all duration-500 ease-in-out
+    transform
+    ${config
+      ? "max-h-[2000px] opacity-100 scale-100 translate-y-0 mt-8 pt-8 border-t"
+      : "max-h-0 opacity-0 scale-95 -translate-y-4"
+    }
+  `}
+>
+  {/* Dynamic fields */}
+</div>
+```
+
+## Loading State
+
+The email button shows a loading spinner while submitting:
+
+```tsx
+<button
+  onClick={handleEmail}
+  disabled={isSending}
+  className={`flex-1 flex items-center justify-center gap-3 py-3 rounded-lg font-semibold text-white shadow-md transition-all duration-300 ${
+    isSending
+      ? "bg-blue-800 cursor-not-allowed opacity-80"
+      : "bg-[#163594] hover:bg-blue-700 cursor-pointer"
+  }`}
+>
+  {isSending ? (
+    <>
+      <svg className="animate-spin h-5 w-5 text-white" /* ... */>
+        {/* Spinner SVG */}
+      </svg>
+      <span>Enviando...</span>
+    </>
+  ) : (
+    <span>Enviar por Email</span>
+  )}
+</button>
+```
+
+## Dependencies
+
+```tsx
+import { useState } from "react";
+import { validarCotizacion } from "@/lib/validators";
+import { segurosConfig } from "@/lib/segurosConfig";
+import Swal from 'sweetalert2';
+```
+
+## API Endpoint
+
+The form expects a `/api/enviar-email` endpoint that:
+
+- Accepts POST requests
+- Receives JSON payload with form data
+- Returns JSON response with `success` boolean
+
+### Expected Request Body
+
+```typescript
+{
+  tipoSeguro: string;
+  nombre: string;
+  email: string;
+  telefono: string;
+  detalle: string;        // Formatted string of dynamic fields
+  [key: string]: any;     // Additional dynamic fields
+}
+```
+
+### Expected Response
+
+```typescript
+{
+  success: boolean;
+}
+```
+
+<Note>
+  The form includes protection against double-submission by disabling the email button while `isSending` is true.
+</Note>
+
+## Design Tokens
+
+### Colors
+
+- Primary Button: `#163594` (Brand blue)
+- Button Hover: `bg-blue-700`
+- Loading State: `bg-blue-800`
+- Error: `text-red-500`, `border-red-500`
+- Background: `bg-gray-100`
+- Card Background: White
+
+### Spacing
+
+- Page Top Padding: `py-24`
+- Card Padding: `p-10`
+- Field Spacing: `gap-6`
+
+## Example: Automotor Insurance
+
+When "automotor" is selected, the form displays:
+
+```tsx
+// Base fields
+- Nombre
+- Email
+- Teléfono
+
+// Dynamic fields from segurosConfig.automotor
+- Tipo de Cobertura (select: Responsabilidad Civil, Terceros Completos, Todo Riesgo)
+- Marca (text)
+- Modelo (text)
+- Año (number, min: 1980, max: current year)
+- Uso del vehículo (select: particular, comercial)
+- ¿Posee GNC? (select: si, no)
+- Localidad (text)
+```
+
+## Source Code Location
+
+`/app/components/CotizacionForm.tsx`
+
+## Related Files
+
+- Configuration: `/lib/segurosConfig.ts`
+- Validation: `/lib/validators.ts`
+- API Endpoint: `/app/api/enviar-email/route.ts`

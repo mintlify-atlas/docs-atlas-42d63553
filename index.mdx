@@ -1,97 +1,208 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Seguros NAG Documentation"
+mode: "custom"
 ---
 
-## Setting up
+<div className="relative w-full bg-gradient-to-br from-[#061e3d] via-[#0a2952] to-[#061e3d] dark:bg-gradient-to-br dark:from-[#0f1117] dark:via-[#061e3d] dark:to-[#0f1117] py-20 px-4 sm:px-6 lg:px-8">
+  <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE2YzAgMS4xLS45IDItMiAycy0yLS45LTItMiAuOS0yIDItMiAyIC45IDIgMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
+  
+  <div className="relative z-10 max-w-6xl mx-auto text-center">
+    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+      Seguros NAG Documentation
+    </h1>
+    
+    <p className="text-lg sm:text-xl text-gray-200 dark:text-gray-300 max-w-2xl mx-auto mb-10">
+      Learn how to build and customize the NAG Estudio insurance landing page with Next.js, React, and TypeScript
+    </p>
+    
+    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center flex-wrap">
+      <a
+        href="/quickstart"
+        className="bg-[#203ea8] text-white px-8 py-3.5 rounded-lg font-semibold hover:bg-[#1a3089] transition-colors shadow-lg"
+      >
+        Get Started
+      </a>
+      
+      <a
+        href="/components/cotizacion-form"
+        className="border border-white/30 bg-white/10 backdrop-blur-sm text-white px-8 py-3.5 rounded-lg font-semibold hover:bg-white/20 transition-colors"
+      >
+        Explore Components
+      </a>
+    </div>
+  </div>
+</div>
 
-Get your documentation site up and running in minutes.
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 text-center">
+    Quick Start
+  </h2>
+  
+  <p className="text-base text-gray-600 dark:text-gray-400 mb-12 text-center max-w-2xl mx-auto">
+    Get the insurance landing page running locally in just a few steps
+  </p>
+  
+  <Steps>
+    <Step title="Clone the repository">
+      Clone the Seguros NAG repository to your local machine.
+      
+      ```bash
+      git clone https://github.com/p0nkx/seguros-web.git
+      cd seguros-web
+      ```
+    </Step>
+    
+    <Step title="Install dependencies">
+      Install all required packages using npm.
+      
+      ```bash
+      npm install
+      ```
+      
+      <Note>This project uses Next.js 16, React 19, TypeScript, and Tailwind CSS.</Note>
+    </Step>
+    
+    <Step title="Start development server">
+      Run the development server and open your browser.
+      
+      ```bash
+      npm run dev
+      ```
+      
+      Visit [http://localhost:3000](http://localhost:3000) to see your application.
+    </Step>
+    
+    <Step title="Explore the codebase">
+      Check out the [Components](/components/cotizacion-form) and [Configuration](/configuration/seguros-config) sections to learn how to customize the site.
+    </Step>
+  </Steps>
+</div>
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
-  </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 text-center">
+    Explore the Documentation
+  </h2>
+  
+  <p className="text-base text-gray-600 dark:text-gray-400 mb-12 text-center max-w-2xl mx-auto">
+    Discover everything you need to build and customize your insurance website
+  </p>
+  
+  <CardGroup cols={2}>
     <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
+      title="Components"
+      icon="puzzle-piece"
+      href="/components/header"
+    >
+      Learn about reusable React components including the quote form, header, footer, and WhatsApp button.
+    </Card>
+    
+    <Card
+      title="Configuration"
+      icon="gear"
+      href="/configuration/seguros-config"
+    >
+      Configure insurance types, form validation, and styling options for your application.
+    </Card>
+    
+    <Card
+      title="Pages"
+      icon="file"
+      href="/pages/home"
+    >
+      Understand the structure and functionality of the home, quote, and login pages.
+    </Card>
+    
+    <Card
+      title="API Reference"
+      icon="code"
+      href="/api/enviar-email"
+    >
+      Explore the email API endpoint for handling quote submissions.
+    </Card>
+  </CardGroup>
+</div>
 
-## Create beautiful pages
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3 text-center">
+    Key Features
+  </h2>
+  
+  <p className="text-base text-gray-600 dark:text-gray-400 mb-12 text-center max-w-2xl mx-auto">
+    Built with modern web technologies for performance and developer experience
+  </p>
+  
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#27272a] p-6 rounded-xl">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        Dynamic Quote Forms
+      </h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Multi-step quote forms with validation for auto, home, life, and other insurance types.
+      </p>
+    </div>
+    
+    <div className="bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#27272a] p-6 rounded-xl">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        WhatsApp Integration
+      </h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Instant quote submission via WhatsApp for immediate customer engagement.
+      </p>
+    </div>
+    
+    <div className="bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#27272a] p-6 rounded-xl">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        Email API
+      </h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Backend API route for sending quote requests via email with nodemailer.
+      </p>
+    </div>
+    
+    <div className="bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#27272a] p-6 rounded-xl">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        TypeScript Type Safety
+      </h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Fully typed components and configuration for better development experience.
+      </p>
+    </div>
+    
+    <div className="bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#27272a] p-6 rounded-xl">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        Responsive Design
+      </h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Mobile-first design with Tailwind CSS for optimal experience on all devices.
+      </p>
+    </div>
+    
+    <div className="bg-gray-50 dark:bg-[#1a1d27] border border-gray-200 dark:border-[#27272a] p-6 rounded-xl">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+        Form Validation
+      </h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">
+        Robust client-side validation system for all insurance types and fields.
+      </p>
+    </div>
+  </div>
+</div>
 
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<div className="mt-16 mb-16 max-w-5xl mx-auto px-6">
+  <div className="bg-gradient-to-br from-[#061e3d] to-[#0a2952] dark:from-[#1a1d27] dark:to-[#061e3d] border border-transparent dark:border-[#27272a] p-10 rounded-2xl text-center">
+    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+      Ready to get started?
+    </h2>
+    
+    <p className="text-base text-gray-200 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+      Follow our quickstart guide to set up your development environment and start customizing the insurance landing page.
+    </p>
+    
+    <a
+      href="/quickstart"
+      className="inline-block bg-[#203ea8] text-white px-8 py-3.5 rounded-lg font-semibold hover:bg-[#1a3089] transition-colors shadow-lg"
+    >
+      View Quickstart Guide
+    </a>
+  </div>
+</div>

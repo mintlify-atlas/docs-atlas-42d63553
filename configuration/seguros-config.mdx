@@ -1,0 +1,359 @@
+---
+title: Insurance Configuration
+description: Learn how to configure insurance types and their form fields in Seguros NAG
+---
+
+The insurance configuration system in Seguros NAG uses a type-safe, flexible structure to define different insurance products and their required form fields.
+
+## Configuration Structure
+
+The `segurosConfig` object is located in `lib/segurosConfig.ts` and defines all available insurance types and their field configurations.
+
+### TypeScript Types
+
+The configuration system uses several TypeScript types to ensure type safety:
+
+```typescript lib/segurosConfig.ts
+export type CampoBase = {
+  name: string;
+  label: string;
+  required: boolean;
+};
+
+export type CampoTextual = CampoBase & {
+  type: "text" | "email" | "tel";
+};
+
+export type CampoNumber = CampoBase & {
+  type: "number";
+  min?: number;
+  max?: number;
+};
+
+export type CampoSelect = CampoBase & {
+  type: "select";
+  options: string[];
+};
+
+export type Campo =
+  | CampoTextual
+  | CampoNumber
+  | CampoSelect;
+
+export type SeguroConfig = {
+  titulo: string;
+  campos: Campo[];
+};
+```
+
+### Field Types Explained
+
+<AccordionGroup>
+  <Accordion title="CampoBase - Base Field Properties">
+    All field types inherit from `CampoBase` which provides:
+    - `name`: Unique identifier for the field
+    - `label`: Display label shown to users
+    - `required`: Whether the field must be completed
+  </Accordion>
+
+  <Accordion title="CampoTextual - Text Input Fields">
+    For text-based inputs with types:
+    - `text`: General text input
+    - `email`: Email address with validation
+    - `tel`: Telephone number input
+  </Accordion>
+
+  <Accordion title="CampoNumber - Numeric Fields">
+    For numeric inputs with optional constraints:
+    - `min`: Minimum allowed value
+    - `max`: Maximum allowed value
+  </Accordion>
+
+  <Accordion title="CampoSelect - Dropdown Fields">
+    For selection fields with predefined options:
+    - `options`: Array of selectable values
+  </Accordion>
+</AccordionGroup>
+
+## Insurance Types
+
+### Automotor (Auto Insurance)
+
+```typescript lib/segurosConfig.ts
+automotor: {
+  titulo: "Datos del Vehículo",
+  campos: [
+    {
+      name: "cobertura",
+      label: "Tipo de Cobertura automotor",
+      type: "select",
+      required: true,
+      options: ["Responsabilidad Civil", "Terceros Completos", "Todo Riesgo"],
+    },
+    { name: "marca", label: "Marca", type: "text", required: true },
+    { name: "modelo", label: "Modelo", type: "text", required: true },
+    { 
+      name: "anio", 
+      label: "Año", 
+      type: "number", 
+      required: true, 
+      min: 1980, 
+      max: new Date().getFullYear() 
+    },
+    {
+      name: "uso",
+      label: "Uso del vehículo",
+      type: "select",
+      required: true,
+      options: ["particular", "comercial"],
+    },
+    {
+      name: "gnc",
+      label: "¿Posee GNC?",
+      type: "select",
+      required: false,
+      options: ["si", "no"],
+    },
+    { name: "localidad", label: "Localidad", type: "text", required: true },
+  ],
+}
+```
+
+### Vida (Life Insurance)
+
+```typescript lib/segurosConfig.ts
+vida: {
+  titulo: "Datos del Seguro de Vida",
+  campos: [
+    { 
+      name: "edad", 
+      label: "Edad", 
+      type: "number", 
+      required: true, 
+      min: 18, 
+      max: 90 
+    },
+  ],
+}
+```
+
+### Hogar (Home Insurance)
+
+```typescript lib/segurosConfig.ts
+hogar: {
+  titulo: "Datos del Seguro de Hogar",
+  campos: [
+    { 
+      name: "metros", 
+      label: "Metros cuadrados", 
+      type: "number", 
+      required: true, 
+      min: 1 
+    },
+    {
+      name: "Vivienda",
+      label: "Tipo de Vivienda",
+      type: "select",
+      required: true,
+      options: [
+        "CASAS Y DEPARTAMENTOS EN PLANTA BAJA", 
+        "DEPTOS. EN ALTURA Y CASAS EN COUNTRIES Y BARRIOS PRIVADOS"
+      ],
+    },
+    { name: "localidad", label: "Localidad", type: "text", required: true },
+  ],
+}
+```
+
+### Responsabilidad Civil (Liability Insurance)
+
+```typescript lib/segurosConfig.ts
+"responsabilidad civil": {
+  titulo: "Datos del Seguro de Responsabilidad Civil",
+  campos: [
+    { 
+      name: "actividad", 
+      label: "Actividad a Realizar", 
+      type: "text", 
+      required: true 
+    },
+    {
+      name: "sumaAsegurada",
+      label: "Suma Asegurada",
+      min: 100000,
+      type: "number",
+      required: true,
+    },
+  ],
+}
+```
+
+### Accidentes Personales (Personal Accident Insurance)
+
+```typescript lib/segurosConfig.ts
+"accidentes personales": {
+  titulo: "Datos del Seguro de Accidentes Personales",
+  campos: [ 
+    { 
+      name: "edad", 
+      label: "Edad", 
+      type: "number", 
+      required: true,
+      min: 18, 
+      max: 80
+    },
+    {
+      name: "actividad", 
+      label: "Actividad Profesional",
+      type: "text",
+      required: true,
+    },
+    { 
+      name: "sumaAsegurada", 
+      label: "Suma Asegurada", 
+      type: "number", 
+      required: true, 
+      min: 3000000, 
+      max: 60000000
+    },
+    { 
+      name: "tipo", 
+      label: "Tipo de cobertura", 
+      type: "select", 
+      required: true, 
+      options: ["Colectivo", "Individual"] 
+    },
+    { name: "localidad", label: "Localidad", type: "text", required: true },
+    { 
+      name: "periodo", 
+      label: "Periodo de cobertura", 
+      type: "select", 
+      required: true, 
+      options: ["Periodo corto", "Periodo largo"] 
+    },
+  ],
+}
+```
+
+### Incendio (Fire Insurance)
+
+```typescript lib/segurosConfig.ts
+incendio: {
+  titulo: "Datos del Seguro de Incendio",
+  campos: [
+    { 
+      name: "metros", 
+      label: "Metros cuadrados", 
+      type: "number", 
+      required: true 
+    },
+    {
+      name: "Tipo de Vivienda",
+      label: "Tipo de Vivienda",
+      type: "select",
+      required: true,
+      options: [
+        "CASAS Y DEPARTAMENTOS EN PLANTA BAJA", 
+        "DEPTOS EN PISOS ALTOS"
+      ],
+    },
+    { name: "localidad", label: "Localidad", type: "text", required: true },
+  ],
+}
+```
+
+### Otros (Other Insurance)
+
+```typescript lib/segurosConfig.ts
+otros: {
+  titulo: "otros",
+  campos: [
+    { 
+      name: "detalle", 
+      label: "Detalle del seguro", 
+      type: "text", 
+      required: true
+    },
+  ],
+}
+```
+
+## Adding New Insurance Types
+
+To add a new insurance type, follow these steps:
+
+<Steps>
+  <Step title="Define the configuration">
+    Add a new entry to the `segurosConfig` object:
+
+    ```typescript lib/segurosConfig.ts
+    export const segurosConfig: Record<string, SeguroConfig> = {
+      // ... existing configs
+      
+      "nuevo-seguro": {
+        titulo: "Título del Nuevo Seguro",
+        campos: [
+          // Define your fields here
+        ],
+      },
+    };
+    ```
+  </Step>
+
+  <Step title="Add to the form select">
+    Update the select dropdown in `app/components/CotizacionForm.tsx`:
+
+    ```tsx app/components/CotizacionForm.tsx
+    <select value={tipoSeguro} onChange={(e) => setTipoSeguro(e.target.value)}>
+      <option value="">Seleccionar tipo de seguro</option>
+      {/* ... existing options */}
+      <option value="nuevo-seguro">Nuevo Seguro</option>
+    </select>
+    ```
+  </Step>
+
+  <Step title="Test validation">
+    The validation system will automatically handle your new fields based on their types. See [Form Validation](/configuration/validators) for details.
+  </Step>
+</Steps>
+
+## Usage in Components
+
+The configuration is imported and used in the quotation form:
+
+```tsx app/components/CotizacionForm.tsx
+import { segurosConfig } from "@/lib/segurosConfig";
+
+// Get config for selected insurance type
+const config = segurosConfig[tipoSeguro as keyof typeof segurosConfig];
+
+// Render dynamic fields
+{config && (
+  <>
+    <h2>{config.titulo}</h2>
+    {config.campos.map((campo) => (
+      // Render field based on campo.type
+    ))}
+  </>
+)}
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Descriptive Labels" icon="tag">
+    Labels should be clear and user-friendly. Use terminology that customers understand.
+  </Card>
+  
+  <Card title="Set Appropriate Constraints" icon="ruler">
+    Use `min` and `max` values for numeric fields to prevent invalid data entry.
+  </Card>
+  
+  <Card title="Mark Required Fields" icon="asterisk">
+    Only set `required: true` for fields that are absolutely necessary for processing quotes.
+  </Card>
+  
+  <Card title="Provide Meaningful Options" icon="list">
+    For select fields, ensure options cover all common cases or include an "Other" option.
+  </Card>
+</CardGroup>

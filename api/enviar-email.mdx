@@ -1,0 +1,196 @@
+---
+title: 'Email API Endpoint'
+description: 'Send insurance quote emails via the email API'
+---
+
+## Overview
+
+The email API endpoint allows you to send formatted insurance quote emails to the configured recipient. The endpoint processes quote information and generates a professionally styled HTML email with client details, insurance type, and a WhatsApp contact link.
+
+This endpoint is used internally by the Seguros NAG application to notify the agency when a new quote request is submitted through the website.
+
+## Endpoint Details
+
+<Card title="POST /api/enviar-email" icon="envelope">
+  Send a formatted insurance quote email
+</Card>
+
+**Method:** `POST`  
+**Path:** `/api/enviar-email`  
+**Content-Type:** `application/json`
+
+## Authentication & Configuration
+
+This endpoint requires environment variables to be configured for nodemailer:
+
+<ParamField path="EMAIL_USER" type="string" required>
+  Gmail account email address used to send emails
+</ParamField>
+
+<ParamField path="EMAIL_PASS" type="string" required>
+  Gmail app password (not the regular password - must be an app-specific password)
+</ParamField>
+
+<Note>
+  The email service is configured to use Gmail. Ensure you have generated an [app-specific password](https://support.google.com/accounts/answer/185833) for your Gmail account.
+</Note>
+
+## Request Parameters
+
+All parameters are sent in the JSON request body:
+
+<ParamField path="tipoSeguro" type="string" required>
+  The type of insurance being quoted (e.g., "Auto", "Moto", "Hogar", "Bicicleta")
+</ParamField>
+
+<ParamField path="nombre" type="string" required>
+  Full name of the client requesting the quote
+</ParamField>
+
+<ParamField path="telefono" type="string" required>
+  Phone number of the client. Will be formatted with Argentina's country code (+54) for WhatsApp link generation
+</ParamField>
+
+<ParamField path="email" type="string" required>
+  Email address of the client
+</ParamField>
+
+<ParamField path="detalle" type="string" required>
+  Detailed information about the insurance request. Should be formatted with newline-separated key-value pairs (e.g., "Marca: Toyota\nModelo: Corolla\nAño: 2020")
+</ParamField>
+
+## Response Format
+
+### Success Response
+
+<ResponseField name="success" type="boolean">
+  Indicates whether the email was sent successfully. Returns `true` on success
+</ResponseField>
+
+**Status Code:** `200`
+
+```json
+{
+  "success": true
+}
+```
+
+### Error Response
+
+<ResponseField name="success" type="boolean">
+  Returns `false` when an error occurs
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message describing what went wrong
+</ResponseField>
+
+**Status Code:** `500`
+
+```json
+{
+  "success": false,
+  "error": "Error al procesar la solicitud"
+}
+```
+
+## Example Request
+
+<CodeGroup>
+
+```bash cURL
+curl -X POST https://your-domain.com/api/enviar-email \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tipoSeguro": "Auto",
+    "nombre": "Juan Pérez",
+    "telefono": "1145678901",
+    "email": "juan.perez@example.com",
+    "detalle": "Marca: Toyota\nModelo: Corolla\nAño: 2020\nVersion: XEI 2.0"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('/api/enviar-email', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    tipoSeguro: 'Auto',
+    nombre: 'Juan Pérez',
+    telefono: '1145678901',
+    email: 'juan.perez@example.com',
+    detalle: 'Marca: Toyota\nModelo: Corolla\nAño: 2020\nVersion: XEI 2.0'
+  })
+});
+
+const data = await response.json();
+console.log(data);
+```
+
+```python Python
+import requests
+import json
+
+url = "https://your-domain.com/api/enviar-email"
+payload = {
+    "tipoSeguro": "Auto",
+    "nombre": "Juan Pérez",
+    "telefono": "1145678901",
+    "email": "juan.perez@example.com",
+    "detalle": "Marca: Toyota\nModelo: Corolla\nAño: 2020\nVersion: XEI 2.0"
+}
+
+response = requests.post(url, json=payload)
+print(response.json())
+```
+
+</CodeGroup>
+
+## Example Response
+
+```json
+{
+  "success": true
+}
+```
+
+## Email Template Features
+
+The generated email includes:
+
+- **Branded Header**: ESTUDIO NAG logo and branding
+- **Quote Reference Number**: Randomly generated 4-digit reference number
+- **Client Information Section**: Name, phone, and email displayed prominently
+- **Insurance Type Badge**: Highlighted insurance type (Auto, Moto, etc.)
+- **Technical Specifications**: Parsed details with key-value formatting
+- **WhatsApp Contact Link**: Direct link with Argentina phone code (+54)
+- **Professional Styling**: Dark theme with gradient backgrounds and responsive design
+
+## Error Handling
+
+The endpoint handles errors gracefully and returns appropriate HTTP status codes:
+
+| Status Code | Description |
+|-------------|-------------|
+| `200` | Email sent successfully |
+| `500` | Server error (nodemailer configuration issue, invalid request data, or network error) |
+
+<Warning>
+  Common errors include:
+  - Missing or invalid Gmail credentials in environment variables
+  - Invalid email format in request body
+  - Network issues preventing email delivery
+  - Gmail security restrictions (ensure app passwords are enabled)
+</Warning>
+
+## Implementation Details
+
+The endpoint uses:
+- **Nodemailer**: SMTP client for sending emails via Gmail
+- **Next.js Route Handler**: Server-side API route
+- **HTML Email Template**: Inline CSS for email client compatibility
+- **WhatsApp Integration**: Automatic phone number formatting and link generation
+
+See the implementation at: `source/app/api/enviar-email/route.ts:4`

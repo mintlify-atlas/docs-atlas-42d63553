@@ -1,0 +1,92 @@
+---
+title: "Introduction"
+description: "Overview of the Seguros NAG insurance landing page project"
+---
+
+# Introduction
+
+Seguros NAG is a professional insurance landing page developed for NAG Estudio, a specialized insurance brokerage firm. The project provides an elegant, modern web presence designed to attract clients and convey trust, professionalism, and clarity in the insurance industry.
+
+## What is Seguros NAG?
+
+This is a production-ready Next.js application that serves as the institutional website for an insurance brokerage. The platform enables potential clients to:
+
+- Request insurance quotes for multiple types of coverage (auto, home, life, etc.)
+- Contact the agency directly via WhatsApp integration
+- Submit detailed quote requests through intelligent forms
+- Access information about different insurance products
+
+## Key Technologies
+
+The project is built with modern web technologies:
+
+- **Next.js 16** - App Router architecture for optimal performance
+- **React 19** - Latest React features for UI development
+- **TypeScript 5** - Type-safe code throughout the application
+- **Tailwind CSS 4** - Utility-first CSS framework for responsive design
+- **Nodemailer 8** - Email handling for quote submissions
+- **Vercel Analytics** - Built-in analytics and performance monitoring
+
+### Supporting Libraries
+
+- **@heroicons/react** - Beautiful hand-crafted SVG icons
+- **react-icons** - Popular icon library integration
+- **SweetAlert2** - Elegant, responsive popup messages
+
+## Main Features
+
+### Dynamic Quote Forms
+
+The application includes a sophisticated form system powered by `lib/segurosConfig.ts` that supports multiple insurance types:
+
+- **Automotor** (Auto insurance) - Vehicle coverage options
+- **Vida** (Life insurance) - Age-based life coverage
+- **Hogar** (Home insurance) - Property protection
+- **Responsabilidad Civil** (Civil liability) - Professional liability coverage
+- **Accidentes Personales** (Personal accidents) - Accident coverage
+- **Incendio** (Fire insurance) - Fire damage protection
+
+Each insurance type has custom fields with validation rules defined in the configuration.
+
+### WhatsApp Integration
+
+Seamless communication via WhatsApp button component (`app/components/WhatsappButton.tsx`) allows instant client engagement. Quote submissions include WhatsApp contact links formatted for Argentina (+54 country code).
+
+### Email API
+
+The email system (`app/api/enviar-email/route.ts`) sends professionally formatted HTML emails using Nodemailer with:
+
+- Branded email templates with NAG Estudio styling
+- Dynamic content based on insurance type
+- Unique reference numbers for tracking
+- Direct WhatsApp contact links embedded in emails
+
+### Responsive Design
+
+The application is fully responsive with:
+
+- Mobile-optimized layouts
+- Touch-friendly navigation
+- Adaptive hero images (`public/hero-mobile.jpg`, `public/hero.png`)
+- Scroll-to-top functionality
+
+## Who This Documentation Is For
+
+This documentation is designed for:
+
+- **Developers** working on the Seguros NAG project
+- **Contributors** who want to understand the codebase structure
+- **Maintainers** responsible for updates and feature additions
+- **Team members** at NAG Estudio who need technical context
+
+<Note>
+  This project uses the Next.js App Router pattern. All pages are located in the `app/` directory with server components by default.
+</Note>
+
+## Project Repository
+
+The source code is hosted on GitHub at `https://github.com/p0nkx/seguros-web`.
+
+## Next Steps
+
+Ready to get started? Check out the [Quickstart](/quickstart) guide to set up your local development environment.

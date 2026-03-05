@@ -1,0 +1,218 @@
+---
+title: 'Footer'
+description: 'Comprehensive footer component with navigation, contact info, and social media links'
+icon: 'square-down'
+---
+
+## Overview
+
+The `Footer` component provides a structured footer layout with company information, navigation links, contact details, and social media integration. It features a responsive grid layout and automatic copyright year updating.
+
+## Features
+
+- **Responsive Grid Layout**: 4-column layout on desktop, stacks on mobile
+- **Dynamic Copyright**: Automatically displays the current year
+- **Social Media Integration**: Direct links to Instagram and Facebook
+- **Contact Information**: Complete business contact details
+- **Navigation Mirror**: Includes all main navigation links
+
+## Component Structure
+
+The Footer component is a server-side component that doesn't accept any props.
+
+```tsx
+export default function Footer()
+```
+
+## Layout Sections
+
+The footer is divided into four main columns:
+
+### 1. Brand & Description
+
+Displays the company name, mission statement, and regulatory information:
+
+```tsx
+<div>
+  <h2 className="text-2xl font-bold text-white">
+    Seguros NAG
+  </h2>
+  <p className="text-gray-400 mt-4 text-sm leading-relaxed">
+    Protegemos lo que más te importa...
+  </p>
+  <p className="text-gray-500 text-xs mt-4">
+    Productora Asesora de Seguros matriculada.
+  </p>
+</div>
+```
+
+### 2. Navigation
+
+Provides quick access to all main site sections:
+
+- Inicio (`#inicio`)
+- Servicios (`#servicios`)
+- Planes (`#planes`)
+- Contacto (`#contacto`)
+
+### 3. Contact Information
+
+Displays complete business contact details:
+
+```tsx
+<p className="text-sm text-gray-400 leading-relaxed">
+  Del Viso<br />
+  Buenos Aires, Argentina<br />
+  +54 11 6412 9888<br />
+  estudiojuridiconagasoc@gmail.com
+</p>
+```
+
+### 4. Social Media
+
+Includes branded social media links with hover effects:
+
+- Instagram: `https://www.instagram.com/estudio_nag/`
+- Facebook: `https://www.facebook.com/share/1HTBwqNdy5/`
+
+## Implementation
+
+### Basic Usage
+
+```tsx
+import Footer from '@/components/Footer';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <Footer />
+      </body>
+    </html>
+  );
+}
+```
+
+## Dynamic Copyright Year
+
+The footer automatically displays the current year:
+
+```tsx
+const currentYear = new Date().getFullYear();
+
+// Later in the JSX:
+<div className="border-t border-gray-800 pt-6 text-center text-xs text-gray-500">
+  © {currentYear} Seguros NAG. Todos los derechos reservados.
+</div>
+```
+
+## Social Media Icons
+
+The component uses React Icons for social media integration:
+
+```tsx
+import { FaInstagram, FaFacebookF } from "react-icons/fa";
+
+// Instagram button
+<a
+  href="https://www.instagram.com/estudio_nag/"
+  target="_blank"
+  className="w-10 h-10 flex items-center justify-center rounded-full 
+    bg-white/10 hover:bg-[#E1306C] transition-all duration-300"
+>
+  <FaInstagram className="text-white text-lg" />
+</a>
+
+// Facebook button
+<a
+  href="https://www.facebook.com/share/1HTBwqNdy5/"
+  target="_blank"
+  className="w-10 h-10 flex items-center justify-center rounded-full 
+    bg-white/10 hover:bg-[#1877F2] transition-all duration-300"
+>
+  <FaFacebookF className="text-white text-lg" />
+</a>
+```
+
+## Styling Features
+
+### Hover Effects
+
+Navigation links use Tailwind's arbitrary variants for hover states:
+
+```tsx
+className="
+  space-y-3 
+  text-sm 
+  text-gray-400 
+  [&_a]:transition-colors 
+  [&_a]:duration-300 
+  [&_a:hover]:text-[#163594]
+"
+```
+
+### Social Media Hover Colors
+
+- Instagram: Transitions to `#E1306C` (Instagram brand color)
+- Facebook: Transitions to `#1877F2` (Facebook brand color)
+
+## Responsive Design
+
+### Desktop (md and up)
+
+```tsx
+<div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+  {/* 4 columns */}
+</div>
+```
+
+### Mobile
+
+All columns stack vertically with appropriate spacing.
+
+## Design Tokens
+
+### Colors
+
+- Background: `bg-gray-900` (Dark gray)
+- Primary Text: White
+- Secondary Text: `text-gray-400`
+- Tertiary Text: `text-gray-500`
+- Border: `border-gray-800`
+- Link Hover: `#163594` (Brand blue)
+
+### Spacing
+
+- Top Padding: `pt-12`
+- Bottom Padding: `pb-8`
+- Column Gap: `gap-10`
+
+## Accessibility
+
+- Semantic HTML with `<footer>` element
+- External links open in new tabs with `target="_blank"`
+- Clear visual hierarchy with heading sizes
+- Adequate color contrast for readability
+
+## Dependencies
+
+```tsx
+import { FaInstagram, FaFacebookF } from "react-icons/fa";
+```
+
+<Note>
+  The component requires the `react-icons` package for social media icons.
+</Note>
+
+## Contact Information
+
+The footer displays the following business information:
+
+- **Location**: Del Viso, Buenos Aires, Argentina
+- **Phone**: +54 11 6412 9888
+- **Email**: estudiojuridiconagasoc@gmail.com
+
+## Source Code Location
+
+`/app/components/Footer.tsx`

@@ -1,0 +1,359 @@
+---
+title: Form Validation
+description: Learn how form validation works in Seguros NAG to ensure data quality
+---
+
+The validation system in Seguros NAG ensures that all quote requests contain valid, complete data before submission. It's located in `lib/validators.ts` and integrates with the insurance configuration.
+
+## The validarCotizacion Function
+
+The main validation function accepts a form submission and returns an object containing any validation errors:
+
+```typescript lib/validators.ts
+export function validarCotizacion(
+  tipoSeguro: string,
+  formData: any
+) {
+  const errores: Record<string, string> = {};
+
+  if (!tipoSeguro) {
+    errores.tipoSeguro = "Seleccioná un tipo de seguro";
+  }
+
+  if (!formData.nombre?.trim()) {
+    errores.nombre = "Falta ingresar nombre";
+  }
+
+  if (!formData.email?.trim()) {
+    errores.email = "Falta ingresar email";
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      errores.email = "Ingresá un email válido";
+    }
+  }
+
+  if (!formData.telefono?.trim()) {
+    errores.telefono = "Falta ingresar teléfono";
+  } else {
+    const telefonoRegex = /^\d{8,}$/;
+    if (!telefonoRegex.test(formData.telefono)) {
+      errores.telefono = "Ingresá un teléfono válido (mínimo 8 dígitos)";
+    }
+  }
+
+  const config = segurosConfig[tipoSeguro as keyof typeof segurosConfig];
+
+  if (!config) return errores;
+
+  config.campos.forEach((campo) => {
+    const valor = formData[campo.name];
+
+    if (campo.required && !valor) {
+      errores[campo.name] = `Falta completar ${campo.label}`;
+      return;
+    }
+
+    // Validaciones para campos number
+    if (campo.type === "number" && valor) {
+      const numero = Number(valor);
+
+      if (campo.min !== undefined && numero < campo.min) {
+        errores[campo.name] = `El mínimo permitido es ${campo.min}`;
+      }
+
+      if (campo.max !== undefined && numero > campo.max) {
+        errores[campo.name] = `El máximo permitido es ${campo.max}`;
+      }
+    }
+  });
+
+  return errores;
+}
+```
+
+## Validation Rules
+
+### Base Field Validation
+
+All quote forms require these base fields:
+
+<AccordionGroup>
+  <Accordion title="Insurance Type Validation">
+    ```typescript
+    if (!tipoSeguro) {
+      errores.tipoSeguro = "Seleccioná un tipo de seguro";
+    }
+    ```
+    
+    Ensures a valid insurance type is selected before processing.
+  </Accordion>
+
+  <Accordion title="Name Validation">
+    ```typescript
+    if (!formData.nombre?.trim()) {
+      errores.nombre = "Falta ingresar nombre";
+    }
+    ```
+    
+    Checks that the name field is not empty after trimming whitespace.
+  </Accordion>
+
+  <Accordion title="Email Validation">
+    ```typescript
+    if (!formData.email?.trim()) {
+      errores.email = "Falta ingresar email";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        errores.email = "Ingresá un email válido";
+      }
+    }
+    ```
+    
+    Validates email format using a regex pattern:
+    - Must contain `@` symbol
+    - Must have domain with `.`
+    - No whitespace allowed
+  </Accordion>
+
+  <Accordion title="Phone Validation">
+    ```typescript
+    if (!formData.telefono?.trim()) {
+      errores.telefono = "Falta ingresar teléfono";
+    } else {
+      const telefonoRegex = /^\d{8,}$/;
+      if (!telefonoRegex.test(formData.telefono)) {
+        errores.telefono = "Ingresá un teléfono válido (mínimo 8 dígitos)";
+      }
+    }
+    ```
+    
+    Phone validation rules:
+    - Minimum 8 digits
+    - Only numeric characters
+    - No spaces or special characters
+  </Accordion>
+</AccordionGroup>
+
+### Dynamic Field Validation
+
+Fields defined in the insurance configuration are validated dynamically:
+
+#### Required Field Check
+
+```typescript lib/validators.ts
+if (campo.required && !valor) {
+  errores[campo.name] = `Falta completar ${campo.label}`;
+  return;
+}
+```
+
+If a field is marked as `required: true` in the configuration, this validation ensures it has a value.
+
+#### Number Field Validation
+
+```typescript lib/validators.ts
+if (campo.type === "number" && valor) {
+  const numero = Number(valor);
+
+  if (campo.min !== undefined && numero < campo.min) {
+    errores[campo.name] = `El mínimo permitido es ${campo.min}`;
+  }
+
+  if (campo.max !== undefined && numero > campo.max) {
+    errores[campo.name] = `El máximo permitido es ${campo.max}`;
+  }
+}
+```
+
+For numeric fields with `min` or `max` constraints:
+- Converts the value to a number
+- Checks against minimum value if defined
+- Checks against maximum value if defined
+
+## Error Message Structure
+
+Validation errors are returned as a `Record<string, string>` where:
+- **Key**: Field name (e.g., `"nombre"`, `"email"`, `"edad"`)
+- **Value**: User-friendly error message in Spanish
+
+### Example Error Object
+
+```typescript
+{
+  "tipoSeguro": "Seleccioná un tipo de seguro",
+  "email": "Ingresá un email válido",
+  "edad": "El mínimo permitido es 18"
+}
+```
+
+## Usage in Forms
+
+The validation function is called before submitting the form:
+
+```tsx app/components/CotizacionForm.tsx
+import { validarCotizacion } from "@/lib/validators";
+
+const handleEmail = async () => {
+  // Run validation
+  const nuevosErrores = validarCotizacion(tipoSeguro, formData);
+
+  // Check if there are errors
+  if (Object.keys(nuevosErrores).length > 0) {
+    setErrors(nuevosErrores);
+    return; // Stop submission
+  }
+
+  // Clear errors and proceed
+  setErrors({});
+  
+  // ... continue with submission
+};
+```
+
+## Displaying Validation Errors
+
+Errors are displayed inline below each form field:
+
+```tsx app/components/CotizacionForm.tsx
+<input
+  type="text"
+  name="nombre"
+  placeholder="Nombre Completo"
+  value={formData.nombre}
+  onChange={handleChange}
+  className={`inputStyle ${errors.nombre ? "border-red-500" : ""}`}
+/>
+<div className="min-h-[20px]">
+  {errors.nombre && (
+    <p className="text-red-500 text-sm mt-1">
+      {errors.nombre}
+    </p>
+  )}
+</div>
+```
+
+### Visual Feedback
+
+<CardGroup cols={2}>
+  <Card title="Red Border" icon="border-all">
+    Fields with errors receive a `border-red-500` class for visual emphasis.
+  </Card>
+  
+  <Card title="Error Message" icon="triangle-exclamation">
+    Error text appears below the field in red with proper spacing.
+  </Card>
+</CardGroup>
+
+## Validation Examples
+
+<CodeGroup>
+```typescript Valid Auto Insurance
+{
+  tipoSeguro: "automotor",
+  nombre: "Juan Pérez",
+  email: "juan@example.com",
+  telefono: "1145678901",
+  marca: "Ford",
+  modelo: "Focus",
+  anio: 2020,
+  uso: "particular",
+  localidad: "Buenos Aires"
+}
+// Result: {} (no errors)
+```
+
+```typescript Invalid - Missing Required Fields
+{
+  tipoSeguro: "automotor",
+  nombre: "Juan Pérez",
+  email: "juan@example.com",
+  telefono: "1145678901"
+  // Missing: marca, modelo, anio, uso, localidad
+}
+// Result:
+{
+  "marca": "Falta completar Marca",
+  "modelo": "Falta completar Modelo",
+  "anio": "Falta completar Año",
+  "uso": "Falta completar Uso del vehículo",
+  "localidad": "Falta completar Localidad"
+}
+```
+
+```typescript Invalid - Format Errors
+{
+  tipoSeguro: "vida",
+  nombre: "Juan Pérez",
+  email: "invalid-email",
+  telefono: "123",
+  edad: 15
+}
+// Result:
+{
+  "email": "Ingresá un email válido",
+  "telefono": "Ingresá un teléfono válido (mínimo 8 dígitos)",
+  "edad": "El mínimo permitido es 18"
+}
+```
+
+```typescript Invalid - Out of Range
+{
+  tipoSeguro: "accidentes personales",
+  nombre: "Juan Pérez",
+  email: "juan@example.com",
+  telefono: "1145678901",
+  edad: 85,
+  sumaAsegurada: 1000000
+}
+// Result:
+{
+  "edad": "El máximo permitido es 80",
+  "sumaAsegurada": "El mínimo permitido es 3000000"
+}
+```
+</CodeGroup>
+
+## Best Practices
+
+<Steps>
+  <Step title="Validate on Submit">
+    Always call `validarCotizacion` before processing form submissions (email or WhatsApp).
+  </Step>
+
+  <Step title="Show All Errors">
+    Display all validation errors simultaneously so users can fix multiple issues at once.
+  </Step>
+
+  <Step title="Clear Errors Appropriately">
+    Clear the error state after successful validation or when the user starts correcting a field.
+  </Step>
+
+  <Step title="Use Friendly Messages">
+    Error messages use informal Spanish ("vos" form) to match the site's tone.
+  </Step>
+
+  <Step title="Prevent Multiple Submissions">
+    Disable submit buttons during validation and submission to prevent duplicate requests.
+  </Step>
+</Steps>
+
+## Extending Validation
+
+To add custom validation rules:
+
+1. **Add validation logic** in `lib/validators.ts`
+2. **Return appropriate error messages** in the `errores` object
+3. **Display errors** in the form component
+
+### Example: Adding CPF/CUIT Validation
+
+```typescript lib/validators.ts
+if (formData.cuit?.trim()) {
+  const cuitRegex = /^\d{2}-\d{8}-\d{1}$/;
+  if (!cuitRegex.test(formData.cuit)) {
+    errores.cuit = "Ingresá un CUIT válido (formato: 20-12345678-9)";
+  }
+}
+```

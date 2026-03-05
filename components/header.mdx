@@ -1,0 +1,177 @@
+---
+title: 'Header'
+description: 'Navigation header component with responsive mobile menu and scroll-based styling'
+icon: 'bars'
+---
+
+## Overview
+
+The `Header` component is a fixed navigation bar that adapts its appearance based on scroll position and current route. It features a responsive design with a collapsible mobile menu and smooth transitions.
+
+## Features
+
+- **Scroll-Based Styling**: Background becomes opaque with blur effect after scrolling 50px
+- **Route-Aware**: Automatically adapts styling on the `/cotizacion` page
+- **Responsive Design**: Desktop horizontal menu and mobile hamburger menu
+- **Fixed Positioning**: Stays at the top of the viewport for easy navigation
+- **Smooth Transitions**: All state changes are animated with CSS transitions
+
+## Component Structure
+
+The Header component is a client-side component that doesn't accept any props.
+
+```tsx
+export default function Header()
+```
+
+## Navigation Structure
+
+The header includes the following navigation links:
+
+- **Inicio**: Links to `/#inicio`
+- **Servicios**: Links to `/#servicios`
+- **Planes**: Links to `/#planes`
+- **Contacto**: Links to `/#contacto`
+
+## Implementation
+
+### Basic Usage
+
+```tsx
+import Header from '@/components/Header';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <Header />
+        {children}
+      </body>
+    </html>
+  );
+}
+```
+
+### State Management
+
+The component manages two internal states:
+
+```tsx
+const [scrolled, setScrolled] = useState(false);
+const [menuOpen, setMenuOpen] = useState(false);
+```
+
+- `scrolled`: Tracks whether the user has scrolled more than 50px
+- `menuOpen`: Controls the visibility of the mobile menu
+
+### Scroll Detection
+
+The component uses an effect to listen for scroll events:
+
+```tsx
+useEffect(() => {
+  const handleScroll = () => {
+    setScrolled(window.scrollY > 50);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+```
+
+## Styling Behavior
+
+### Default State (Top of Page)
+
+- Transparent background
+- Larger padding (py-5)
+- No shadow
+
+### Scrolled State
+
+- Dark blue background with 95% opacity (`bg-[#001f3d]/95`)
+- Backdrop blur effect
+- Box shadow for depth
+- Reduced padding (py-3)
+
+### On Cotizacion Page
+
+The header automatically applies the scrolled styling when on the `/cotizacion` route:
+
+```tsx
+scrolled || pathname === "/cotizacion"
+  ? "bg-[#001f3d]/95 backdrop-blur-md shadow-lg py-3"
+  : "bg-transparent py-5"
+```
+
+## Logo
+
+The header displays the Seguros NAG logo:
+
+```tsx
+<img
+  src="/logo-blanco-cuadrado.svg"
+  alt="Seguros NAG"
+  className="h-12 md:h-15 w-auto drop-shadow-lg transition-all duration-300"
+/>
+```
+
+## Mobile Menu
+
+### Toggle Button
+
+The mobile menu is controlled by a hamburger button:
+
+```tsx
+<button
+  className="md:hidden text-white text-3xl"
+  onClick={() => setMenuOpen(!menuOpen)}
+>
+  {menuOpen ? "✕" : "☰"}
+</button>
+```
+
+### Menu Animation
+
+The mobile menu uses height and opacity transitions:
+
+```tsx
+className={`md:hidden transition-all duration-300 overflow-hidden ${
+  menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+}`}
+```
+
+## Design Tokens
+
+### Colors
+
+- Primary Background: `#001f3d` (Dark Blue)
+- Hover Color: `#163594` (Medium Blue)
+- Text: White
+
+### Breakpoints
+
+- Mobile: Default
+- Desktop: `md:` (768px and up)
+
+## Accessibility
+
+- Semantic HTML with `<header>` and `<nav>` elements
+- Clear hover states for all interactive elements
+- Mobile menu closes automatically when a link is clicked
+
+## Dependencies
+
+```tsx
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+```
+
+<Note>
+  The component uses Next.js's `usePathname` hook to detect the current route and `Link` component for client-side navigation.
+</Note>
+
+## Source Code Location
+
+`/app/components/Header.tsx`

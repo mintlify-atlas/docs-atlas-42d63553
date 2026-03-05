@@ -1,80 +1,230 @@
 ---
 title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+description: "Get the Seguros NAG project running locally in minutes"
 ---
 
-## Get started in three steps
+# Quickstart
 
-Get your documentation site running locally and make your first customization.
+This guide will help you set up the Seguros NAG project on your local machine and start developing.
 
-### Step 1: Set up your local environment
+## Prerequisites
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+Before you begin, ensure you have the following installed:
 
-### Step 2: Deploy your changes
+- **Node.js** (LTS version recommended)
+- **npm** (comes with Node.js)
+- **Git** for version control
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+Verify your installation:
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+```bash
+node -v
+npm -v
+git --version
+```
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+## Getting Started
 
-### Step 3: Go live
+<Steps>
+  <Step title="Clone the repository">
+    Clone the Seguros NAG repository from GitHub:
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+    ```bash
+    git clone https://github.com/p0nkx/seguros-web.git
+    ```
+  </Step>
 
-## Next steps
+  <Step title="Navigate to project directory">
+    Move into the project folder:
 
-Now that you have your docs running, explore these key features:
+    ```bash
+    cd seguros-web
+    ```
+  </Step>
 
-<CardGroup cols={2}>
+  <Step title="Install dependencies">
+    Install all required packages using npm:
 
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
+    ```bash
+    npm install
+    ```
 
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
+    This command installs all dependencies defined in `package.json`, including:
+    - Next.js 16.1.6
+    - React 19.2.3
+    - TypeScript 5
+    - Tailwind CSS 4
+    - Nodemailer for email functionality
+    - Testing libraries (Vitest, React Testing Library)
+  </Step>
 
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
+  <Step title="Configure environment variables">
+    Create a `.env.local` file in the root directory for email configuration:
 
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
+    ```bash
+    EMAIL_USER=your-email@gmail.com
+    EMAIL_PASS=your-app-password
+    ```
 
-</CardGroup>
+    <Note>
+      The email API route at `app/api/enviar-email/route.ts` uses these credentials to send quote submissions via Gmail.
+    </Note>
+  </Step>
+
+  <Step title="Start the development server">
+    Run the development server:
+
+    ```bash
+    npm run dev
+    ```
+
+    The application will be available at:
+    ```
+    http://localhost:3000
+    ```
+
+    The development server supports hot module replacement - changes will be reflected automatically when you save files.
+  </Step>
+</Steps>
+
+## Available Scripts
+
+The project includes several npm scripts defined in `package.json`:
+
+<CodeGroup>
+
+```bash Development
+npm run dev
+```
+
+```bash Production Build
+npm run build
+```
+
+```bash Start Production Server
+npm start
+```
+
+```bash Lint Code
+npm run lint
+```
+
+```bash Run Tests
+npm test
+```
+
+</CodeGroup>
+
+### Script Details
+
+- **`dev`** - Starts Next.js development server with hot reload
+- **`build`** - Creates an optimized production build
+- **`start`** - Runs the production server (requires `build` first)
+- **`lint`** - Runs ESLint to check code quality
+- **`test`** - Executes Vitest test suite
+
+## Project Structure
+
+Understanding the key directories will help you navigate the codebase:
+
+### `app/` Directory
+
+The main application code using Next.js App Router:
+
+```
+app/
+├── api/
+│   └── enviar-email/
+│       └── route.ts          # Email API endpoint
+├── components/
+│   ├── CotizacionForm.tsx    # Quote form component
+│   ├── Footer.tsx            # Site footer
+│   ├── Header.tsx            # Navigation header
+│   ├── ScrollToTop.tsx       # Scroll to top button
+│   └── WhatsappButton.tsx    # WhatsApp contact button
+├── cotizacion/
+│   └── page.tsx              # Quote request page
+├── login/
+│   └── page.tsx              # Login page
+├── globals.css               # Global styles and Tailwind directives
+├── layout.tsx                # Root layout with metadata
+└── page.tsx                  # Homepage
+```
+
+### `lib/` Directory
+
+Shared utilities and configuration:
+
+```
+lib/
+├── segurosConfig.ts          # Insurance types configuration
+└── validators.ts             # Form validation logic
+```
+
+The `segurosConfig.ts` file defines all insurance types (automotor, vida, hogar, etc.) with their respective form fields, validation rules, and options.
+
+### `public/` Directory
+
+Static assets served directly:
+
+```
+public/
+├── banner.jpg                # Hero banner image
+├── hero-mobile.jpg           # Mobile hero image
+├── hero.png                  # Desktop hero image
+├── logo-blanco-cuadrado.png  # White square logo
+├── logo-blanco.png           # White logo
+├── logo-oscuro-cuadrado.png  # Dark square logo
+└── favicon files             # Site icons
+```
+
+### Configuration Files
+
+- **`next.config.ts`** - Next.js configuration
+- **`tsconfig.json`** - TypeScript compiler options
+- **`tailwind.config.js`** - Tailwind CSS customization
+- **`vitest.config.ts`** - Vitest test runner configuration
+- **`eslint.config.mjs`** - ESLint rules
+
+## Key Features to Explore
+
+### Quote Form System
+
+The quote form system is powered by the configuration in `lib/segurosConfig.ts:42-150`. Each insurance type has:
+
+- Custom field definitions
+- Type-specific validation (min/max values, required fields)
+- Dropdown options for selections
+- Dynamic rendering based on insurance type
+
+### Email Templates
+
+Email submissions are handled by the API route at `app/api/enviar-email/route.ts:4-123`. The route:
+
+- Accepts POST requests with quote data
+- Generates branded HTML emails with gradient styling
+- Includes WhatsApp contact links with Argentina country code
+- Uses Nodemailer with Gmail SMTP
+
+### Layout and Metadata
+
+The root layout at `app/layout.tsx:58-76` configures:
+
+- Geist font families
+- Open Graph metadata for social sharing
+- Favicon and Apple touch icons
+- Vercel Analytics integration
+- Global components (Header, Footer, WhatsApp button)
+
+## Next Steps
+
+Now that you have the project running:
+
+1. Explore the homepage at `app/page.tsx`
+2. Test the quote form at `/cotizacion`
+3. Review the insurance configuration in `lib/segurosConfig.ts`
+4. Check out the reusable components in `app/components/`
 
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+  Remember to configure your `.env.local` file with valid Gmail credentials to test the email functionality.
 </Note>

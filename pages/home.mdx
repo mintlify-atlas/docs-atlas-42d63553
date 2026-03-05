@@ -1,0 +1,496 @@
+---
+title: "Home Page"
+description: "The main landing page showcasing insurance services, coverage levels, and company partnerships"
+---
+
+# Home Page
+
+The home page (`app/page.tsx`) is the main landing page of the Seguros NAG website. It presents a comprehensive overview of insurance services, coverage options, and establishes trust through partner insurance companies.
+
+## Route
+
+- **Path**: `/`
+- **File**: `app/page.tsx`
+- **Type**: Server Component
+
+## Page Structure
+
+The home page consists of six main sections:
+
+1. **Hero Section** - Full-screen welcome with call-to-action
+2. **Insurance Companies Carousel** - Partner logos showcase
+3. **Services Grid** - Six insurance service categories
+4. **Coverage Levels** - Automotive insurance tiers
+5. **Why Choose Us** - Value propositions
+6. **Final CTA** - Contact and quote section
+
+---
+
+## Hero Section
+
+The hero section features a full-screen background image with responsive image sources and a gradient overlay.
+
+### Features
+- Responsive background images:
+  - Mobile: `/hero-mobile.jpg`
+  - Desktop: `/banner.jpg`
+- Dark gradient overlay for text readability
+- Centered content with headline and CTA button
+
+### Implementation
+
+```tsx
+<section
+  id="inicio"
+  className="
+    relative h-screen flex items-center justify-center text-white
+    bg-[url('/hero-mobile.jpg')]
+    lg:bg-[url('/banner.jpg')]
+    bg-cover bg-center
+  "
+>
+  {/* Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-b from-[#001f3d]/80 via-[#001f3d]/60 to-[#001f3d]/90"></div>
+
+  {/* Content */}
+  <div className="relative z-10 text-center px-6 max-w-4xl">
+    <h1 className="text-4xl md:text-6xl font-bold mb-6">
+      Protegemos lo que más importa
+    </h1>
+
+    <p className="text-lg md:text-xl mb-8 text-gray-200">
+      Asesoramiento profesional en seguros de autos, motos, hogar y personas.
+    </p>
+
+    <a
+      href="/cotizacion"
+      className="
+        bg-[#163594] px-10 py-4 rounded-lg text-white font-semibold
+        hover:bg-blue-700 hover:scale-105
+        shadow-lg shadow-[#163594]/40
+        transition-all duration-300
+      "
+    >
+      Solicitar Cotización
+    </a>
+  </div>
+</section>
+```
+
+---
+
+## Insurance Companies Carousel
+
+Displays partner insurance companies in an infinite scrolling animation.
+
+### Partner Companies
+- Rus
+- Federación Patronal
+- Rivadavia
+- ATM
+- Galeno
+- Experta
+- Sancor
+- San Cristóbal
+
+### Implementation
+
+```tsx
+<section className="py-8 bg-white text-center overflow-hidden">
+  <div className="mb-6">
+    <h2 className="text-3xl md:text-4xl font-bold text-[#001f3d] mt-2">
+      Aseguradoras con las que trabajamos
+    </h2>
+    <div className="w-20 h-1 bg-[#163594] mx-auto mt-4 rounded-full"></div>
+  </div>
+
+  <p className="text-gray-600 mb-12 max-w-2xl mx-auto px-6">
+    Trabajamos con las compañías líderes del mercado para brindarte
+    las mejores coberturas y el respaldo que merecés.
+  </p>
+
+  {/* Carousel with fade effects */}
+  <div className="relative overflow-hidden max-w-7xl mx-auto">
+    <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent z-10"></div>
+    <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent z-10"></div>
+
+    <div className="flex w-max animate-scroll">
+      {/* Duplicated blocks for seamless loop */}
+      <div className="flex gap-16 items-center px-8">
+        <img src="/logos/rus.png" className="logo h-15" />
+        <img src="/logos/federacion.png" className="logo h-25" />
+        {/* ... more logos */}
+      </div>
+    </div>
+  </div>
+</section>
+```
+
+<Note>
+The carousel uses the `animate-scroll` CSS animation class for continuous scrolling. Logo blocks are duplicated to create a seamless infinite loop effect.
+</Note>
+
+---
+
+## Services Grid
+
+Displays six insurance service categories in a responsive grid layout.
+
+### Services Offered
+
+<Tabs>
+  <Tab title="Automotor">
+    **Seguro Automotor** - `TruckIcon` from Heroicons
+    
+    Protection for vehicles with multiple coverage options.
+    
+    Coverage types:
+    - Responsabilidad Civil
+    - Terceros Completos
+    - Todo Riesgo
+    
+    **CTA Link**: `/cotizacion?tipo=automotor`
+  </Tab>
+  
+  <Tab title="Hogar">
+    **Seguro de Hogar** - `HomeIcon` from Heroicons
+    
+    Protection for home and personal belongings.
+    
+    Coverage for:
+    - Incendio
+    - Robo
+    - Daños por fenómenos naturales
+    
+    **CTA Link**: `/cotizacion?tipo=hogar`
+  </Tab>
+  
+  <Tab title="Vida">
+    **Seguro de Vida** - `HeartIcon` from Heroicons
+    
+    Financial security for families.
+    
+    Options:
+    - Vida Individual
+    - Vida Colectivo
+    - Ahorro y retiro
+    
+    **CTA Link**: `/cotizacion?tipo=vida`
+  </Tab>
+  
+  <Tab title="Responsabilidad Civil">
+    **Responsabilidad Civil** - `ShieldCheckIcon` from Heroicons
+    
+    Protection against third-party damages.
+    
+    Coverage:
+    - Profesional
+    - Comercial
+    - Eventos
+    
+    **CTA Link**: `/cotizacion?tipo=responsabilidad civil`
+  </Tab>
+  
+  <Tab title="Accidentes Personales">
+    **Accidentes Personales** - `UserGroupIcon` from Heroicons
+    
+    Coverage for accidents in work or recreational activities.
+    
+    Types:
+    - Individual
+    - Colectivo
+    - Actividades específicas
+    
+    **CTA Link**: `/cotizacion?tipo=accidentes personales`
+  </Tab>
+  
+  <Tab title="Incendio">
+    **Seguro contra Incendio** - `FireIcon` from Heroicons
+    
+    Protection for properties against fire risks.
+    
+    Coverage:
+    - Casa
+    - Departamento
+    - Comercial
+    
+    **CTA Link**: `/cotizacion?tipo=incendio`
+  </Tab>
+</Tabs>
+
+### Grid Implementation
+
+```tsx
+<section id="servicios" className="py-20 bg-gray-100 text-center">
+  <div className="max-w-7xl mx-auto px-6">
+    <div className="mb-16">
+      <span className="text-sm uppercase tracking-widest text-[#163594] font-semibold">
+        Coberturas Disponibles
+      </span>
+      <h2 className="text-4xl md:text-5xl font-bold text-[#001f3d] mt-3">
+        Nuestros Servicios
+      </h2>
+      <div className="w-20 h-1 bg-[#163594] mx-auto mt-5 rounded-full"></div>
+    </div>
+
+    <div className="grid md:grid-cols-3 gap-10">
+      {/* Service card example */}
+      <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 text-left">
+        <TruckIcon className="w-10 h-10 text-[#163594] mb-4" />
+        <h3 className="text-xl font-semibold text-[#163594] mb-4">
+          Seguro Automotor
+        </h3>
+        <p className="text-gray-600 mb-4">
+          Protección integral para tu vehículo con distintas opciones de cobertura.
+        </p>
+        <ul className="text-sm text-gray-600 space-y-2 list-disc list-inside">
+          <li>Responsabilidad Civil</li>
+          <li>Terceros Completos</li>
+          <li>Todo Riesgo</li>
+        </ul>
+        <a href="/cotizacion?tipo=automotor"
+          className="inline-block mt-6 text-sm font-semibold text-[#163594] hover:underline"
+        >
+          Cotizar ahora →
+        </a>
+      </div>
+      {/* ... more cards */}
+    </div>
+  </div>
+</section>
+```
+
+### Icons Used
+
+All icons are imported from `@heroicons/react/24/outline`:
+- `TruckIcon` - Automotor
+- `HomeIcon` - Hogar
+- `HeartIcon` - Vida
+- `ShieldCheckIcon` - Responsabilidad Civil
+- `UserGroupIcon` - Accidentes Personales
+- `FireIcon` - Incendio
+
+---
+
+## Coverage Levels (Automotive Plans)
+
+Detailed comparison of three automotive insurance coverage tiers.
+
+### Coverage Tiers
+
+<Tabs>
+  <Tab title="Responsabilidad Civil">
+    **Basic Mandatory Coverage**
+    
+    - Minimum required by law
+    - Covers damages to third parties only
+    - Does not cover own vehicle damages
+    
+    **CTA**: `/cotizacion?tipo=automotor&subtipo=Responsabilidad Civil`
+    
+    ```tsx
+    <div className="flex flex-col justify-between bg-white border border-gray-200 p-10 rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 text-left">
+      <div>
+        <h3 className="text-2xl font-semibold mb-4 text-[#001f3d]">
+          Responsabilidad Civil
+        </h3>
+        <p className="text-gray-600 mb-6">
+          Es el seguro mínimo obligatorio por ley para poder circular.
+          Cubre daños ocasionados a terceros en caso de accidente.
+          <span className="block mt-2 font-medium text-gray-800">
+            No cubre daños propios del vehículo.
+          </span>
+        </p>
+      </div>
+      <a
+        href="/cotizacion?tipo=automotor&subtipo=Responsabilidad Civil"
+        className="mt-8 inline-block text-center bg-gray-200 text-gray-800 font-semibold py-3 rounded-xl hover:bg-gray-300 transition"
+      >
+        Cotizar RC
+      </a>
+    </div>
+    ```
+  </Tab>
+  
+  <Tab title="Terceros Completos">
+    **Most Popular Choice** ⭐
+    
+    Complete protection with excellent price-coverage balance.
+    
+    Includes:
+    - ✔ Responsabilidad Civil
+    - ✔ Destrucción total por accidente
+    - ✔ Incendio total y parcial
+    - ✔ Robo o hurto total y parcial
+    - ✔ Reposición de cristales
+    - ✔ Grúa hasta 300 km
+    - ✔ Cobertura contra granizo
+    
+    **CTA**: `/cotizacion?tipo=automotor&subtipo=Terceros Completos`
+    
+    **Visual Highlight**: Scaled (105%) with blue border and "Más elegido" badge
+  </Tab>
+  
+  <Tab title="Todo Riesgo">
+    **Most Complete Coverage**
+    
+    - Covers third-party and own damages
+    - Even when accident is driver's fault
+    - Works with deductible (franchise)
+    - Pay fixed amount, company covers the rest
+    
+    **CTA**: `/cotizacion?tipo=automotor&subtipo=Todo Riesgo`
+  </Tab>
+</Tabs>
+
+### Implementation
+
+```tsx
+<section id="planes" className="py-20 bg-gray-50 text-center">
+  <div className="max-w-7xl mx-auto px-6">
+    <div className="mb-20">
+      <span className="text-sm uppercase tracking-widest text-[#163594] font-semibold">
+        Seguro Automotor
+      </span>
+      <h2 className="text-4xl md:text-5xl font-bold text-[#001f3d] mt-3">
+        Niveles de Cobertura
+      </h2>
+      <div className="w-20 h-1 bg-[#163594] mx-auto mt-5 rounded-full"></div>
+    </div>
+
+    <div className="grid md:grid-cols-3 gap-10 items-stretch">
+      {/* Three coverage cards */}
+    </div>
+  </div>
+</section>
+```
+
+---
+
+## Why Choose Us Section
+
+Three value propositions highlighting the company's competitive advantages.
+
+### Value Propositions
+
+1. **Asesoramiento Personalizado**
+   - Analysis of individual situations
+   - Best coverage recommendations based on needs
+   - Independent from specific companies
+
+2. **Trabajamos con Múltiples Aseguradoras**
+   - Quotes from multiple leading companies
+   - Best price-protection ratio
+
+3. **Acompañamiento en Siniestros**
+   - Support during claims process
+   - Step-by-step guidance
+   - Simplified process
+
+### Implementation
+
+```tsx
+<section className="py-28 bg-gray-100">
+  <div className="max-w-6xl mx-auto px-6 text-center">
+    <h2 className="text-4xl md:text-5xl font-bold text-[#001f3d] mb-6">
+      ¿Por qué elegirnos?
+    </h2>
+
+    <p className="text-gray-600 max-w-2xl mx-auto mb-16 text-lg">
+      No solo cotizamos seguros. Acompañamos a nuestros clientes antes, durante y después de cada decisión,
+      brindando asesoramiento claro y personalizado.
+    </p>
+
+    <div className="grid md:grid-cols-3 gap-10 text-left">
+      <div className="bg-white p-8 rounded-2xl shadow-sm">
+        <h3 className="font-semibold text-[#163594] text-xl mb-4">
+          Asesoramiento Personalizado
+        </h3>
+        <p className="text-gray-600">
+          Analizamos tu situación y te recomendamos la mejor cobertura según tus necesidades,
+          no según una compañía específica.
+        </p>
+      </div>
+      {/* ... more cards */}
+    </div>
+  </div>
+</section>
+```
+
+---
+
+## Final CTA Section
+
+Call-to-action section encouraging visitors to request quotes.
+
+### Features
+- Dark background (`#001f3d`)
+- Centered messaging
+- Trust indicators at bottom
+
+### Implementation
+
+```tsx
+<section
+  id="contacto"
+  className="py-28 bg-[#001f3d] text-white text-center"
+>
+  <div className="max-w-4xl mx-auto px-6">
+    <h2 className="text-4xl md:text-4xl font-bold mb-6">
+      ¿Listo para proteger lo que más importa?
+    </h2>
+
+    <p className="text-gray-300 mb-10 text-lg max-w-2xl mx-auto">
+      Recibí asesoramiento personalizado sin compromiso.
+      Te ayudamos a elegir la cobertura ideal según tu necesidad.
+    </p>
+
+    <p className="text-sm text-gray-400 mt-8">
+      Respuesta rápida • Atención personalizada • Sin compromiso
+    </p>
+  </div>
+</section>
+```
+
+<Note>
+The WhatsApp and quote buttons are commented out in the source code.
+</Note>
+
+---
+
+## User Flow
+
+1. **Landing**: User arrives at hero section
+2. **Trust Building**: Views partner insurance companies
+3. **Service Discovery**: Explores available insurance types
+4. **Coverage Education**: Learns about automotive insurance levels
+5. **Value Proposition**: Understands company advantages
+6. **Action**: Clicks CTA to navigate to `/cotizacion` with optional query parameters
+
+## Navigation Links
+
+All service cards and coverage tiers link to the quote page with pre-filled parameters:
+
+- `/cotizacion?tipo=automotor`
+- `/cotizacion?tipo=hogar`
+- `/cotizacion?tipo=vida`
+- `/cotizacion?tipo=responsabilidad civil`
+- `/cotizacion?tipo=accidentes personales`
+- `/cotizacion?tipo=incendio`
+- `/cotizacion?tipo=automotor&subtipo=Responsabilidad Civil`
+- `/cotizacion?tipo=automotor&subtipo=Terceros Completos`
+- `/cotizacion?tipo=automotor&subtipo=Todo Riesgo`
+
+## Color Palette
+
+- **Primary Blue**: `#163594`
+- **Dark Navy**: `#001f3d`
+- **Background Gray**: `bg-gray-100`
+- **Card White**: `bg-white`
+
+## Responsive Design
+
+- Mobile-first approach
+- Responsive grid: `md:grid-cols-3`
+- Responsive text: `text-4xl md:text-6xl`
+- Different hero images for mobile and desktop

@@ -1,0 +1,394 @@
+---
+title: "Quote Page"
+description: "Insurance quote request page with dynamic form pre-filling based on URL parameters"
+---
+
+# Quote Page
+
+The quote page (`app/cotizacion/page.tsx`) is where users submit insurance quote requests. It integrates the `CotizacionForm` component and supports pre-filled form values through URL query parameters.
+
+## Route
+
+- **Path**: `/cotizacion`
+- **File**: `app/cotizacion/page.tsx`
+- **Type**: Server Component (async)
+
+## Page Purpose
+
+The quote page serves as the primary conversion point where users:
+1. Select their insurance type
+2. Choose coverage level (for automotive insurance)
+3. Provide contact information
+4. Submit a quote request
+
+---
+
+## URL Parameters
+
+The page accepts two optional query parameters for pre-filling the form:
+
+### Parameters
+
+| Parameter | Type | Description | Example |
+|-----------|------|-------------|---------|
+| `tipo` | string | Insurance type selection | `automotor`, `hogar`, `vida` |
+| `subtipo` | string | Coverage subtype (URL-encoded) | `Responsabilidad%20Civil`, `Todo%20Riesgo` |
+
+### Parameter Handling
+
+```tsx
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ tipo?: string; subtipo?: string }>; 
+}) {
+  const params = await searchParams;
+
+  return (
+    <CotizacionForm 
+      tipoInicial={params.tipo} 
+      coberturaInicial={params.subtipo ? decodeURIComponent(params.subtipo) : undefined} 
+    />
+  );
+}
+```
+
+<Note>
+The `subtipo` parameter is URL-decoded using `decodeURIComponent()` to handle spaces and special characters in coverage names.
+</Note>
+
+---
+
+## Complete Implementation
+
+```tsx
+import CotizacionForm from "@/app/components/CotizacionForm";
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ tipo?: string; subtipo?: string }>; 
+}) {
+  const params = await searchParams;
+
+  return (
+    <CotizacionForm 
+      tipoInicial={params.tipo} 
+      // Pass the decoded "subtipo" value to the form
+      coberturaInicial={params.subtipo ? decodeURIComponent(params.subtipo) : undefined} 
+    />
+  );
+}
+```
+
+---
+
+## CotizacionForm Integration
+
+The page renders the `CotizacionForm` component, passing URL parameters as props:
+
+### Props Passed
+
+```tsx
+<CotizacionForm 
+  tipoInicial={params.tipo}              // Insurance type from URL
+  coberturaInicial={params.subtipo}      // Coverage level from URL (decoded)
+/>
+```
+
+### Component Import
+
+```tsx
+import CotizacionForm from "@/app/components/CotizacionForm";
+```
+
+The form component is located at `app/components/CotizacionForm.tsx` and handles all form UI, validation, and submission logic.
+
+<Info>
+See the [CotizacionForm component documentation](/components/cotizacion-form) for detailed information about form fields, validation, and submission handling.
+</Info>
+
+---
+
+## URL Parameter Examples
+
+### Basic Insurance Type Selection
+
+<Tabs>
+  <Tab title="Automotor">
+    **URL**: `/cotizacion?tipo=automotor`
+    
+    Pre-fills the form with:
+    - Insurance type: "Automotor"
+    - Coverage: User selects from dropdown
+    
+    ```tsx
+    // Resulting props
+    <CotizacionForm 
+      tipoInicial="automotor"
+      coberturaInicial={undefined}
+    />
+    ```
+  </Tab>
+  
+  <Tab title="Hogar">
+    **URL**: `/cotizacion?tipo=hogar`
+    
+    Pre-fills the form with:
+    - Insurance type: "Hogar"
+    
+    ```tsx
+    // Resulting props
+    <CotizacionForm 
+      tipoInicial="hogar"
+      coberturaInicial={undefined}
+    />
+    ```
+  </Tab>
+  
+  <Tab title="Vida">
+    **URL**: `/cotizacion?tipo=vida`
+    
+    Pre-fills the form with:
+    - Insurance type: "Vida"
+    
+    ```tsx
+    // Resulting props
+    <CotizacionForm 
+      tipoInicial="vida"
+      coberturaInicial={undefined}
+    />
+    ```
+  </Tab>
+</Tabs>
+
+### Insurance Type with Coverage Level
+
+<Tabs>
+  <Tab title="Responsabilidad Civil">
+    **URL**: `/cotizacion?tipo=automotor&subtipo=Responsabilidad%20Civil`
+    
+    Pre-fills the form with:
+    - Insurance type: "Automotor"
+    - Coverage: "Responsabilidad Civil"
+    
+    ```tsx
+    // URL parameter
+    subtipo=Responsabilidad%20Civil
+    
+    // After decoding
+    decodeURIComponent("Responsabilidad%20Civil") 
+    // => "Responsabilidad Civil"
+    
+    // Resulting props
+    <CotizacionForm 
+      tipoInicial="automotor"
+      coberturaInicial="Responsabilidad Civil"
+    />
+    ```
+  </Tab>
+  
+  <Tab title="Terceros Completos">
+    **URL**: `/cotizacion?tipo=automotor&subtipo=Terceros%20Completos`
+    
+    Pre-fills the form with:
+    - Insurance type: "Automotor"
+    - Coverage: "Terceros Completos"
+    
+    ```tsx
+    // Resulting props
+    <CotizacionForm 
+      tipoInicial="automotor"
+      coberturaInicial="Terceros Completos"
+    />
+    ```
+  </Tab>
+  
+  <Tab title="Todo Riesgo">
+    **URL**: `/cotizacion?tipo=automotor&subtipo=Todo%20Riesgo`
+    
+    Pre-fills the form with:
+    - Insurance type: "Automotor"
+    - Coverage: "Todo Riesgo"
+    
+    ```tsx
+    // Resulting props
+    <CotizacionForm 
+      tipoInicial="automotor"
+      coberturaInicial="Todo Riesgo"
+    />
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## User Flow
+
+### Direct Navigation
+1. User clicks "Solicitar Cotización" from navigation or hero
+2. Lands on `/cotizacion` with no parameters
+3. Selects insurance type and coverage manually
+4. Fills in contact information
+5. Submits quote request
+
+### Pre-filled Flow (from Home Page)
+1. User clicks service card (e.g., "Cotizar ahora" on Automotor)
+2. Navigates to `/cotizacion?tipo=automotor`
+3. Form loads with insurance type pre-selected
+4. User selects coverage level
+5. Fills remaining fields and submits
+
+### Fully Pre-filled Flow (from Coverage Cards)
+1. User clicks coverage tier button (e.g., "Cotizar Terceros")
+2. Navigates to `/cotizacion?tipo=automotor&subtipo=Terceros%20Completos`
+3. Form loads with both type and coverage pre-selected
+4. User only needs to provide contact information
+5. Submits quote request
+
+---
+
+## Server Component Pattern
+
+The page uses Next.js 13+ server component patterns:
+
+### Async/Await for searchParams
+
+```tsx
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ tipo?: string; subtipo?: string }>; 
+}) {
+  // Await the promise to access parameters
+  const params = await searchParams;
+  
+  // Use the parameters
+  return <CotizacionForm tipoInicial={params.tipo} />;
+}
+```
+
+<Note>
+In Next.js 13+, `searchParams` is a Promise that must be awaited in server components.
+</Note>
+
+### Type Safety
+
+Both `tipo` and `subtipo` are typed as optional strings:
+
+```tsx
+searchParams: Promise<{ 
+  tipo?: string;      // Optional insurance type
+  subtipo?: string;   // Optional coverage subtype
+}>
+```
+
+---
+
+## Integration Points
+
+### Incoming Links from Home Page
+
+The home page links to this page with various parameter combinations:
+
+**Service Cards**:
+```tsx
+<a href="/cotizacion?tipo=automotor">Cotizar ahora →</a>
+<a href="/cotizacion?tipo=hogar">Cotizar ahora →</a>
+<a href="/cotizacion?tipo=vida">Cotizar ahora →</a>
+<a href="/cotizacion?tipo=responsabilidad civil">Cotizar ahora →</a>
+<a href="/cotizacion?tipo=accidentes personales">Cotizar ahora →</a>
+<a href="/cotizacion?tipo=incendio">Cotizar ahora →</a>
+```
+
+**Coverage Tier Buttons**:
+```tsx
+<a href="/cotizacion?tipo=automotor&subtipo=Responsabilidad Civil">
+  Cotizar RC
+</a>
+<a href="/cotizacion?tipo=automotor&subtipo=Terceros Completos">
+  Cotizar Terceros
+</a>
+<a href="/cotizacion?tipo=automotor&subtipo=Todo Riesgo">
+  Cotizar Todo Riesgo
+</a>
+```
+
+### Navigation Links
+
+The page is accessible from:
+- Main navigation header
+- Hero section CTA button
+- Service card links (6 insurance types)
+- Coverage tier buttons (3 automotive levels)
+
+---
+
+## URL Encoding Examples
+
+### Spaces in Parameters
+
+```tsx
+// Original text
+"Responsabilidad Civil"
+
+// URL encoded (browser does this automatically)
+"Responsabilidad%20Civil"
+
+// Decoded in component
+decodeURIComponent("Responsabilidad%20Civil")
+// => "Responsabilidad Civil"
+```
+
+### Multiple Word Parameters
+
+```tsx
+// "accidentes personales" becomes
+"accidentes%20personales"
+
+// "responsabilidad civil" becomes  
+"responsabilidad%20civil"
+```
+
+---
+
+## Best Practices
+
+### Always Decode URL Parameters
+
+```tsx
+// ✅ Correct - decode the parameter
+coberturaInicial={params.subtipo ? decodeURIComponent(params.subtipo) : undefined}
+
+// ❌ Incorrect - will have %20 instead of spaces
+coberturaInicial={params.subtipo}
+```
+
+### Handle Missing Parameters
+
+```tsx
+// ✅ Pass undefined when parameter is missing
+tipoInicial={params.tipo}
+// If params.tipo is undefined, form shows default state
+
+// ✅ Conditional decoding
+coberturaInicial={params.subtipo ? decodeURIComponent(params.subtipo) : undefined}
+// Only decode if parameter exists
+```
+
+---
+
+## Related Documentation
+
+- [CotizacionForm Component](/components/cotizacion-form) - Detailed form implementation
+- [Home Page](/pages/home) - Source of navigation links
+- [Header Component](/components/header) - Navigation header implementation
+
+## File Location
+
+```
+source/
+└── app/
+    └── cotizacion/
+        └── page.tsx          # This page
+```

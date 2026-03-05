@@ -1,0 +1,435 @@
+---
+title: Styling & Theming
+description: Learn about the styling system, colors, and design patterns used in Seguros NAG
+---
+
+Seguros NAG uses Tailwind CSS for styling with a custom design system centered around professional insurance branding colors.
+
+## Tailwind CSS Setup
+
+The project uses Tailwind CSS v4 with an inline theme configuration:
+
+```css app/globals.css
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+```
+
+### Dark Mode Support
+
+```css app/globals.css
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+```
+
+## Brand Colors
+
+The application uses a professional blue color palette:
+
+<CardGroup cols={2}>
+  <Card title="Primary Dark" icon="palette">
+    **#001f3d** - Main brand color for headers and primary elements
+  </Card>
+  
+  <Card title="Primary Blue" icon="palette">
+    **#163594** - Interactive elements, buttons, links, and accents
+  </Card>
+  
+  <Card title="Navy Background" icon="palette">
+    **#061e3d** - Background for hero sections and cards
+  </Card>
+  
+  <Card title="Blue Hover" icon="palette">
+    **#1e40af / blue-700** - Hover states for buttons and interactive elements
+  </Card>
+</CardGroup>
+
+## Color Usage Examples
+
+<CodeGroup>
+```tsx Headers & Navigation
+<header className="bg-[#001f3d]/95 backdrop-blur-md shadow-lg">
+  <nav className="max-w-7xl mx-auto px-6">
+    <Link href="/" className="text-white hover:text-[#163594]">
+      Inicio
+    </Link>
+  </nav>
+</header>
+```
+
+```tsx Primary Buttons
+<button className="bg-[#163594] text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-all duration-300">
+  Enviar Cotización
+</button>
+```
+
+```tsx Headings
+<h1 className="text-4xl font-bold text-[#001f3d]">
+  Solicitá tu Cotización
+</h1>
+<span className="text-sm uppercase tracking-widest text-[#163594] font-semibold">
+  Cotización Online
+</span>
+```
+
+```tsx Accent Elements
+<div className="w-20 h-1 bg-[#163594] mx-auto mt-4 rounded-full"></div>
+```
+</CodeGroup>
+
+## Custom CSS Classes
+
+### Input Style
+
+A reusable input style is defined using Tailwind's `@apply` directive:
+
+```css app/globals.css
+.inputStyle {
+  @apply w-full border border-gray-300 rounded-lg px-4 py-3 
+  text-gray-700
+  placeholder:text-gray-600 placeholder:opacity-80
+  text-base
+  focus:ring-2 focus:ring-[#163594] 
+  outline-none transition;
+}
+```
+
+#### Usage
+
+```tsx app/components/CotizacionForm.tsx
+<input
+  type="text"
+  name="nombre"
+  placeholder="Nombre Completo"
+  className="inputStyle"
+/>
+
+<select name="tipoSeguro" className="inputStyle appearance-none bg-white">
+  <option>Seleccionar tipo de seguro</option>
+</select>
+```
+
+### Logo Styles
+
+```css app/globals.css
+.logo {
+  object-fit: contain;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.logo:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+```
+
+## Custom Animations
+
+### Float Animation
+
+Used for hero section elements:
+
+```css app/globals.css
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+```
+
+### Bounce Slow
+
+Subtle bouncing effect:
+
+```css app/globals.css
+@keyframes bounceSlow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-bounce-slow {
+  animation: bounceSlow 2.5s infinite ease-in-out;
+}
+```
+
+### Scroll Animation
+
+For the insurance provider carousel:
+
+```css app/globals.css
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
+```
+
+## Responsive Design Patterns
+
+### Mobile-First Grid
+
+```tsx
+<div className="grid md:grid-cols-2 gap-6">
+  <input className="inputStyle" />
+  <input className="inputStyle" />
+</div>
+```
+
+- Default: Single column on mobile
+- `md:` breakpoint: Two columns on tablets and desktop
+
+### Responsive Navigation
+
+```tsx app/components/Header.tsx
+{/* Desktop Menu */}
+<ul className="hidden md:flex items-center gap-8 font-medium">
+  <li><Link href="/#inicio">Inicio</Link></li>
+  {/* ... more items */}
+</ul>
+
+{/* Mobile Button */}
+<button className="md:hidden text-white text-3xl">
+  {menuOpen ? "✕" : "☰"}
+</button>
+
+{/* Mobile Menu */}
+<div className={`md:hidden transition-all duration-300 ${
+  menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+}`}>
+  {/* Mobile menu items */}
+</div>
+```
+
+### Responsive Typography
+
+```tsx
+<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
+  Título Principal
+</h1>
+```
+
+## Component Styling Patterns
+
+### Cards with Shadow
+
+```tsx
+<div className="bg-white p-10 rounded-2xl shadow-xl">
+  {/* Card content */}
+</div>
+```
+
+### Section Containers
+
+```tsx
+<main className="min-h-screen bg-gray-100 py-24 px-6">
+  <div className="max-w-4xl mx-auto">
+    {/* Section content */}
+  </div>
+</main>
+```
+
+### Buttons with States
+
+<CodeGroup>
+```tsx Primary Button
+<button className="bg-[#163594] text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-all duration-300 shadow-md">
+  Enviar por Email
+</button>
+```
+
+```tsx Secondary Button
+<button className="border border-[#163594] text-[#163594] py-3 px-6 rounded-lg font-semibold hover:bg-[#163594] hover:text-white transition">
+  Enviar por WhatsApp
+</button>
+```
+
+```tsx Disabled Button
+<button 
+  disabled
+  className="bg-blue-800 text-white py-3 px-6 rounded-lg cursor-not-allowed opacity-80"
+>
+  Enviando...
+</button>
+```
+</CodeGroup>
+
+### Form Field with Error State
+
+```tsx app/components/CotizacionForm.tsx
+<div className="flex flex-col">
+  <input
+    type="text"
+    name="nombre"
+    placeholder="Nombre Completo"
+    className={`inputStyle ${errors.nombre ? "border-red-500" : ""}`}
+  />
+  <div className="min-h-[20px]">
+    {errors.nombre && (
+      <p className="text-red-500 text-sm mt-1">
+        {errors.nombre}
+      </p>
+    )}
+  </div>
+</div>
+```
+
+## Smooth Scroll Behavior
+
+```css app/globals.css
+html {
+  scroll-behavior: smooth;
+}
+```
+
+This enables smooth scrolling for anchor links:
+
+```tsx
+<Link href="/#servicios">Ver Servicios</Link>
+```
+
+## Header Transitions
+
+The header changes appearance on scroll:
+
+```tsx app/components/Header.tsx
+<header
+  className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+    scrolled || pathname === "/cotizacion"
+      ? "bg-[#001f3d]/95 backdrop-blur-md shadow-lg py-3"
+      : "bg-transparent py-5"
+  }`}
+>
+```
+
+<AccordionGroup>
+  <Accordion title="Transparent State">
+    - Background: Transparent
+    - Padding: `py-5` (more vertical space)
+    - Used on hero section of homepage
+  </Accordion>
+
+  <Accordion title="Scrolled State">
+    - Background: `#001f3d` with 95% opacity
+    - Backdrop blur for glassmorphism effect
+    - Shadow for depth
+    - Padding: `py-3` (compact)
+  </Accordion>
+</AccordionGroup>
+
+## Dynamic Form Animations
+
+```tsx app/components/CotizacionForm.tsx
+<div
+  className={`
+    overflow-hidden transition-all duration-500 ease-in-out
+    transform
+    ${config
+      ? "max-h-[2000px] opacity-100 scale-100 translate-y-0 mt-8 pt-8 border-t"
+      : "max-h-0 opacity-0 scale-95 -translate-y-2"
+    }
+  `}
+>
+  {/* Dynamic fields appear here */}
+</div>
+```
+
+Fields smoothly animate in when an insurance type is selected:
+- Height expands from 0 to auto
+- Opacity fades in
+- Scale grows slightly
+- Translates into position
+
+## Loading Spinner
+
+```tsx app/components/CotizacionForm.tsx
+{isSending ? (
+  <>
+    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    <span>Enviando...</span>
+  </>
+) : (
+  <span>Enviar por Email</span>
+)}
+```
+
+## Best Practices
+
+<Steps>
+  <Step title="Use Brand Colors Consistently">
+    Stick to `#001f3d` and `#163594` for all primary branding elements to maintain visual consistency.
+  </Step>
+
+  <Step title="Leverage Tailwind Utilities">
+    Use Tailwind's utility classes instead of writing custom CSS whenever possible.
+  </Step>
+
+  <Step title="Create Reusable Classes">
+    Extract commonly repeated patterns (like `.inputStyle`) using `@apply` for maintainability.
+  </Step>
+
+  <Step title="Maintain Accessibility">
+    Ensure sufficient color contrast and use semantic HTML elements with proper ARIA labels.
+  </Step>
+
+  <Step title="Test Responsive Layouts">
+    Always test components at mobile, tablet, and desktop breakpoints.
+  </Step>
+
+  <Step title="Use Transitions Wisely">
+    Add `transition-all duration-300` for smooth state changes, but avoid overusing animations.
+  </Step>
+</Steps>
+
+## SweetAlert2 Toast Styling
+
+The application uses SweetAlert2 for toast notifications with custom styling:
+
+```typescript app/components/CotizacionForm.tsx
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'center',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  background: '#111b31',  // Dark navy background
+  color: '#fff',           // White text
+});
+
+// Usage:
+Toast.fire({
+  icon: 'success',
+  title: 'Cotización enviada con éxito'
+});
+```

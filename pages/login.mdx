@@ -1,0 +1,503 @@
+---
+title: "Login Page"
+description: "User authentication page with glassmorphism design and animated entrance"
+---
+
+# Login Page
+
+The login page (`app/login/page.tsx`) provides user authentication with a modern glassmorphism design and smooth entrance animations.
+
+## Route
+
+- **Path**: `/login`
+- **File**: `app/login/page.tsx`
+- **Type**: Client Component ("use client")
+
+## Page Purpose
+
+The login page allows users to authenticate and access protected areas of the application. It features:
+- Clean, modern glassmorphism UI
+- Animated entrance effects
+- Responsive design
+- Decorative background glows
+
+---
+
+## Complete Implementation
+
+```tsx
+"use client";
+
+import { useEffect, useState } from "react";
+
+export default function LoginPage() {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
+  return (
+    <main className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-[#001f3d] to-[#163594] px-6 overflow-hidden">
+
+      {/* Glow decorativo superior */}
+      <div className="absolute w-96 h-96 bg-white/10 rounded-full blur-3xl top-[-120px] right-[-120px]"></div>
+
+      {/* Glow decorativo inferior */}
+      <div className="absolute w-96 h-96 bg-[#163594]/40 rounded-full blur-3xl bottom-[-120px] left-[-120px]"></div>
+
+      {/* Card */}
+      <div
+        className={`relative w-full max-w-md p-10 rounded-2xl backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl 
+        transform transition-all duration-700 animate-float ${
+          loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+      >
+        <h1 className="text-3xl font-bold text-white text-center mb-8">
+          Bienvenido
+        </h1>
+
+        <form className="space-y-6">
+
+          {/* Email */}
+          <div>
+            <label className="block text-sm text-white mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="correo@ejemplo.com"
+              className="w-full px-4 py-3 rounded-lg bg-white/20 text-white placeholder-white/60 
+              border border-white/30 focus:outline-none 
+              focus:ring-2 focus:ring-white focus:shadow-lg 
+              transition-all duration-300"
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-sm text-white mb-2">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              placeholder="********"
+              className="w-full px-4 py-3 rounded-lg bg-white/20 text-white placeholder-white/60 
+              border border-white/30 focus:outline-none 
+              focus:ring-2 focus:ring-white focus:shadow-lg 
+              transition-all duration-300"
+            />
+          </div>
+
+          {/* Button */}
+          <button
+            type="submit"
+            className="w-full py-3 rounded-lg bg-white text-[#001f3d] font-semibold 
+            transition-all duration-300 hover:scale-[1.03] 
+            hover:shadow-[0_0_20px_rgba(255,255,255,0.6)]"
+          >
+            Ingresar
+          </button>
+
+          {/* Extra link */}
+          <p className="text-center text-white/70 text-sm mt-4 hover:text-white transition cursor-pointer">
+            ¿Olvidaste tu contraseña?
+          </p>
+
+        </form>
+      </div>
+    </main>
+  );
+}
+```
+
+---
+
+## Visual Design
+
+### Background
+
+The page features a gradient background with decorative glow effects:
+
+```tsx
+<main className="relative min-h-screen flex items-center justify-center 
+  bg-gradient-to-br from-[#001f3d] to-[#163594] px-6 overflow-hidden">
+  
+  {/* Top-right glow */}
+  <div className="absolute w-96 h-96 bg-white/10 rounded-full blur-3xl 
+    top-[-120px] right-[-120px]"></div>
+
+  {/* Bottom-left glow */}
+  <div className="absolute w-96 h-96 bg-[#163594]/40 rounded-full blur-3xl 
+    bottom-[-120px] left-[-120px]"></div>
+</main>
+```
+
+### Color Scheme
+- **Background Gradient**: Dark navy (`#001f3d`) to blue (`#163594`)
+- **Glow Effects**: Semi-transparent white and blue
+- **Card**: Glassmorphism with backdrop blur
+- **Text**: White with varying opacity
+
+---
+
+## Glassmorphism Card
+
+The login form uses glassmorphism design technique:
+
+```tsx
+<div className="
+  relative w-full max-w-md p-10 rounded-2xl 
+  backdrop-blur-xl           {/* Blur effect */}
+  bg-white/10                {/* Semi-transparent white */}
+  border border-white/20     {/* Subtle border */}
+  shadow-2xl                 {/* Large shadow */}
+">
+```
+
+### Key Glassmorphism Properties
+- `backdrop-blur-xl` - Creates frosted glass effect
+- `bg-white/10` - 10% opacity white background
+- `border-white/20` - 20% opacity white border
+- `shadow-2xl` - Large shadow for depth
+
+---
+
+## Entrance Animation
+
+The page uses React state to trigger entrance animations:
+
+### Animation Logic
+
+```tsx
+const [loaded, setLoaded] = useState(false);
+
+useEffect(() => {
+  setLoaded(true);  // Trigger animation on mount
+}, []);
+```
+
+### Conditional Classes
+
+```tsx
+<div className={`
+  transform transition-all duration-700 animate-float
+  ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+`}>
+```
+
+### Animation Sequence
+1. **Initial State** (loaded = false):
+   - `opacity-0` - Hidden
+   - `translate-y-10` - Shifted 10px down
+
+2. **After Mount** (loaded = true):
+   - `opacity-100` - Fully visible
+   - `translate-y-0` - Normal position
+   - `duration-700` - 700ms transition
+
+3. **Continuous Animation**:
+   - `animate-float` - Custom floating animation
+
+<Note>
+The `animate-float` class likely refers to a custom CSS animation defined in the global styles.
+</Note>
+
+---
+
+## Form Structure
+
+### Form Fields
+
+<Tabs>
+  <Tab title="Email Field">
+    ```tsx
+    <div>
+      <label className="block text-sm text-white mb-2">
+        Email
+      </label>
+      <input
+        type="email"
+        placeholder="correo@ejemplo.com"
+        className="w-full px-4 py-3 rounded-lg 
+          bg-white/20                   {/* Semi-transparent background */}
+          text-white                    {/* White text */}
+          placeholder-white/60          {/* 60% opacity placeholder */}
+          border border-white/30        {/* Subtle border */}
+          focus:outline-none 
+          focus:ring-2 focus:ring-white {/* Focus state */}
+          focus:shadow-lg 
+          transition-all duration-300"
+      />
+    </div>
+    ```
+    
+    **Features**:
+    - Email type validation
+    - Glassmorphism styling
+    - Focus ring effect
+    - Smooth transitions
+  </Tab>
+  
+  <Tab title="Password Field">
+    ```tsx
+    <div>
+      <label className="block text-sm text-white mb-2">
+        Contraseña
+      </label>
+      <input
+        type="password"
+        placeholder="********"
+        className="w-full px-4 py-3 rounded-lg 
+          bg-white/20 
+          text-white 
+          placeholder-white/60 
+          border border-white/30 
+          focus:outline-none 
+          focus:ring-2 focus:ring-white 
+          focus:shadow-lg 
+          transition-all duration-300"
+      />
+    </div>
+    ```
+    
+    **Features**:
+    - Password masking
+    - Matching glassmorphism styling
+    - Same focus effects as email field
+  </Tab>
+  
+  <Tab title="Submit Button">
+    ```tsx
+    <button
+      type="submit"
+      className="w-full py-3 rounded-lg 
+        bg-white                        {/* Solid white background */}
+        text-[#001f3d]                 {/* Navy text */}
+        font-semibold 
+        transition-all duration-300 
+        hover:scale-[1.03]             {/* Slight scale on hover */}
+        hover:shadow-[0_0_20px_rgba(255,255,255,0.6)] {/* Glow effect */}
+      "
+    >
+      Ingresar
+    </button>
+    ```
+    
+    **Features**:
+    - Solid white button (contrasts with glass form)
+    - Scale animation on hover
+    - Glowing shadow effect on hover
+    - Full-width layout
+  </Tab>
+</Tabs>
+
+### Forgot Password Link
+
+```tsx
+<p className="text-center text-white/70 text-sm mt-4 
+  hover:text-white transition cursor-pointer">
+  ¿Olvidaste tu contraseña?
+</p>
+```
+
+**Features**:
+- 70% opacity normally
+- Full opacity on hover
+- Cursor pointer
+- Small text size
+
+<Warning>
+The forgot password link currently has no href or onClick handler. This is a UI-only element.
+</Warning>
+
+---
+
+## Form Behavior
+
+### Current Implementation
+
+The form is currently a static UI component:
+
+```tsx
+<form className="space-y-6">
+  {/* No onSubmit handler */}
+  {/* No state management */}
+  {/* No validation */}
+</form>
+```
+
+### No Authentication Logic
+
+<Warning>
+This login page is currently a **UI-only implementation** with no authentication logic:
+- No form submission handling
+- No API calls
+- No state management for form values
+- No validation error messages
+- Forgot password link is non-functional
+</Warning>
+
+### Future Implementation Needs
+
+To make this a functional login page, you would need to add:
+
+1. **Form State Management**:
+```tsx
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+```
+
+2. **Submit Handler**:
+```tsx
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  // Authentication logic here
+};
+```
+
+3. **Validation**:
+```tsx
+const [errors, setErrors] = useState({ email: "", password: "" });
+```
+
+4. **API Integration**:
+```tsx
+const response = await fetch('/api/auth/login', {
+  method: 'POST',
+  body: JSON.stringify({ email, password })
+});
+```
+
+---
+
+## Client Component
+
+The page uses the "use client" directive:
+
+```tsx
+"use client";
+
+import { useEffect, useState } from "react";
+```
+
+### Why Client Component?
+
+Required for:
+- `useState` hook for animation state
+- `useEffect` hook for mount detection
+- Browser-only animations
+- Future form interactivity
+
+---
+
+## Responsive Design
+
+### Layout
+
+```tsx
+<main className="
+  min-h-screen              {/* Full viewport height */}
+  flex items-center         {/* Vertical centering */}
+  justify-center            {/* Horizontal centering */}
+  px-6                      {/* Horizontal padding */}
+">
+```
+
+### Card Sizing
+
+```tsx
+<div className="
+  w-full                    {/* Full width on mobile */}
+  max-w-md                  {/* Max 28rem on larger screens */}
+  p-10                      {/* Consistent padding */}
+">
+```
+
+### Form Spacing
+
+```tsx
+<form className="space-y-6">  {/* 1.5rem gap between fields */}
+```
+
+---
+
+## Styling Highlights
+
+### Input Focus Effects
+
+```tsx
+className="
+  focus:outline-none              {/* Remove default outline */}
+  focus:ring-2                    {/* 2px ring */}
+  focus:ring-white                {/* White ring color */}
+  focus:shadow-lg                 {/* Large shadow */}
+  transition-all duration-300     {/* Smooth transition */}
+"
+```
+
+### Button Hover Effects
+
+```tsx
+className="
+  hover:scale-[1.03]              {/* 3% scale increase */}
+  hover:shadow-[0_0_20px_rgba(255,255,255,0.6)]  {/* Glow */}
+  transition-all duration-300     {/* Smooth transition */}
+"
+```
+
+### Glassmorphism Transparency
+
+- **Card Background**: `bg-white/10` (10% opacity)
+- **Card Border**: `border-white/20` (20% opacity)
+- **Input Background**: `bg-white/20` (20% opacity)
+- **Input Border**: `border-white/30` (30% opacity)
+- **Placeholder**: `placeholder-white/60` (60% opacity)
+- **Helper Text**: `text-white/70` (70% opacity)
+
+---
+
+## Design System Integration
+
+### Colors
+
+```tsx
+// Primary colors from brand
+from-[#001f3d]  // Dark navy
+to-[#163594]    // Primary blue
+text-[#001f3d]  // Navy text on white button
+```
+
+### Typography
+
+```tsx
+text-3xl font-bold    // Heading: 30px, bold
+text-sm               // Labels: 14px
+text-sm               // Link: 14px
+```
+
+### Spacing
+
+```tsx
+p-10          // Card padding: 2.5rem
+mb-8          // Heading margin: 2rem
+space-y-6     // Form field gap: 1.5rem
+py-3          // Button padding: 0.75rem
+mb-2          // Label margin: 0.5rem
+```
+
+---
+
+## File Location
+
+```
+source/
+└── app/
+    └── login/
+        └── page.tsx          # This page
+```
+
+## Related Documentation
+
+- [Home Page](/pages/home) - Main landing page
+- [Header Component](/components/header) - Navigation header with login link
