@@ -1,0 +1,73 @@
+{
+  "projectType": "frontend",
+  "projectName": "Seguros NAG",
+  "projectDescription": "Professional insurance landing page built with Next.js, React, TypeScript and Tailwind CSS for NAG Estudio insurance company.",
+  "theme": "almond",
+  "primaryColor": "#061e3d",
+  "lightColor": "#7c8c9a",
+  "darkColor": "#bcc4cd",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get Started",
+        "pages": [
+          "introduction",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "Components",
+        "pages": [
+          "components/header",
+          "components/footer",
+          "components/cotizacion-form",
+          "components/whatsapp-button",
+          "components/scroll-to-top"
+        ]
+      },
+      {
+        "group": "Configuration",
+        "pages": [
+          "configuration/seguros-config",
+          "configuration/validators",
+          "configuration/styling"
+        ]
+      },
+      {
+        "group": "Pages",
+        "pages": [
+          "pages/home",
+          "pages/cotizacion",
+          "pages/login"
+        ]
+      },
+      {
+        "group": "API",
+        "pages": [
+          "api/enviar-email"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Dynamic quote form with multiple insurance types",
+    "WhatsApp integration for instant quotes",
+    "Email API for quote submissions",
+    "Responsive design with Tailwind CSS",
+    "TypeScript type safety",
+    "Form validation system"
+  ],
+  "publicApiSurface": [
+    "CotizacionForm component",
+    "Header component",
+    "Footer component",
+    "WhatsappButton component",
+    "ScrollToTop component",
+    "segurosConfig configuration object",
+    "validarCotizacion function",
+    "/api/enviar-email POST endpoint",
+    "Home page",
+    "Cotizacion page",
+    "Login page"
+  ]
+}
